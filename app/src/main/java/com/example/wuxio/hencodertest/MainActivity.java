@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.example.wuxio.hencodertest.canvas.CanvasFragment;
+import com.example.wuxio.hencodertest.paint.PaintFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,11 +74,13 @@ public class MainActivity extends AppCompatActivity {
 
         private Fragment[] mFragments = {
                 CanvasFragment.newInstance(),
+                PaintFragment.newInstance(),
 
         };
 
         private String[] mTitles = {
-                "draw"
+                "canvas",
+                "paint",
         };
 
         Fragment getFragment(int position) {

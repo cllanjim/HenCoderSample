@@ -1,15 +1,46 @@
 package com.example.wuxio.hencodertest.paint;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+
+import com.example.wuxio.hencodertest.BasePagerFragment;
 
 /**
  * Created by LiuJin on 2018-03-07:15:13
  */
 
-public class PaintFragment extends Fragment {
+public class PaintFragment extends BasePagerFragment {
 
     public static PaintFragment newInstance() {
         PaintFragment fragment = new PaintFragment();
         return fragment;
+    }
+
+    @Override
+    protected PagerAdapter getPagerAdapter() {
+        return new PaintPagerAdapter(getChildFragmentManager());
+    }
+
+    //============================内部类============================
+    class PaintPagerAdapter extends FragmentPagerAdapter {
+
+        private Fragment[] mFragments = {
+        };
+
+        public PaintPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragments[position];
+        }
+
+        @Override
+        public int getCount() {
+            return mFragments.length;
+        }
     }
 }
