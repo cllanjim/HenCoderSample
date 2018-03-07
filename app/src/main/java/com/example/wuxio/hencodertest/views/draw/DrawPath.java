@@ -74,13 +74,13 @@ public class DrawPath extends View {
         pathLine.moveTo(700, 700);
         pathLine.lineTo(800, 800);
         mRectF.set(900, 800, 1400, 1200);
-        pathLine.arcTo(mRectF, -90, 90,true);
+        pathLine.arcTo(mRectF, -90, 90, true);
         canvas.drawPath(pathLine, mPaint);
 
         pathLine.moveTo(700, 1300);
         pathLine.lineTo(800, 1400);
         mRectF.set(900, 1400, 1400, 1800);
-        pathLine.arcTo(mRectF, -90, 90,false);
+        pathLine.arcTo(mRectF, -90, 90, false);
         canvas.drawPath(pathLine, mPaint);
     }
 }
