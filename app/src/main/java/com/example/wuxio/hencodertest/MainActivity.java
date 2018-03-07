@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import com.example.wuxio.hencodertest.draw.DrawFragment;
+import com.example.wuxio.hencodertest.canvas.CanvasFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,10 +66,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 为 main 提供fragment
+     */
     class FragmentContainer {
 
         private Fragment[] mFragments = {
-                DrawFragment.newInstance()
+                CanvasFragment.newInstance(),
+
         };
 
         private String[] mTitles = {

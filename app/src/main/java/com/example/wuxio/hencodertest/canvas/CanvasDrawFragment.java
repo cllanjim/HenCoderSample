@@ -1,4 +1,4 @@
-package com.example.wuxio.hencodertest.draw;
+package com.example.wuxio.hencodertest.canvas;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -12,12 +12,12 @@ import android.view.ViewGroup;
  * Created by LiuJin on 2018-03-07:9:47
  */
 
-public class DrawSubFragment extends Fragment {
+public class CanvasDrawFragment extends Fragment {
 
     private static final String KEY_layoutId = "layoutId";
 
-    public static DrawSubFragment newInstance(@LayoutRes int layoutId) {
-        DrawSubFragment fragment = new DrawSubFragment();
+    public static CanvasDrawFragment newInstance(@LayoutRes int layoutId) {
+        CanvasDrawFragment fragment = new CanvasDrawFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_layoutId, layoutId);
         fragment.setArguments(bundle);

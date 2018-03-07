@@ -1,4 +1,4 @@
-package com.example.wuxio.hencodertest.draw;
+package com.example.wuxio.hencodertest.canvas;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,12 +16,12 @@ import com.example.wuxio.hencodertest.R;
  * Created by LiuJin on 2018-03-06:21:34
  */
 
-public class DrawFragment extends Fragment {
+public class CanvasFragment extends Fragment {
 
     private ViewPager mViewPager;
 
-    public static DrawFragment newInstance() {
-        DrawFragment fragment = new DrawFragment();
+    public static CanvasFragment newInstance() {
+        CanvasFragment fragment = new CanvasFragment();
         return fragment;
     }
 
@@ -55,18 +55,18 @@ public class DrawFragment extends Fragment {
     class DrawAdapter extends FragmentPagerAdapter {
 
         private Fragment[] mFragments = {
-                DrawSubFragment.newInstance(R.layout.draw_color),
-                DrawSubFragment.newInstance(R.layout.draw_circle),
-                DrawSubFragment.newInstance(R.layout.draw_rect),
-                DrawSubFragment.newInstance(R.layout.draw_point),
-                DrawSubFragment.newInstance(R.layout.draw_oval),
-                DrawSubFragment.newInstance(R.layout.draw_line),
-                DrawSubFragment.newInstance(R.layout.draw_round_rect),
-                DrawSubFragment.newInstance(R.layout.draw_arc),
-                DrawSubFragment.newInstance(R.layout.draw_path),
-                DrawSubFragment.newInstance(R.layout.draw_bitmap),
-                DrawSubFragment.newInstance(R.layout.draw_text),
-                DrawSubFragment.newInstance(R.layout.draw_histogram),
+                CanvasDrawFragment.newInstance(R.layout.draw_color),
+                CanvasDrawFragment.newInstance(R.layout.draw_circle),
+                CanvasDrawFragment.newInstance(R.layout.draw_rect),
+                CanvasDrawFragment.newInstance(R.layout.draw_point),
+                CanvasDrawFragment.newInstance(R.layout.draw_oval),
+                CanvasDrawFragment.newInstance(R.layout.draw_line),
+                CanvasDrawFragment.newInstance(R.layout.draw_round_rect),
+                CanvasDrawFragment.newInstance(R.layout.draw_arc),
+                CanvasDrawFragment.newInstance(R.layout.draw_path),
+                CanvasDrawFragment.newInstance(R.layout.draw_bitmap),
+                CanvasDrawFragment.newInstance(R.layout.draw_text),
+                CanvasDrawFragment.newInstance(R.layout.draw_histogram),
         };
 
         public DrawAdapter(FragmentManager fm) {
