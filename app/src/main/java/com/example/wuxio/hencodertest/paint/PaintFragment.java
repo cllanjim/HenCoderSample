@@ -32,7 +32,7 @@ public class PaintFragment extends BasePagerFragment {
                 ShowViewFragment.newInstance(R.layout.paint_color),
                 ShowViewFragment.newInstance(R.layout.paint_shader),
                 ShowViewFragment.newInstance(R.layout.paint_shader_tile),
-                ShowViewFragment.newInstance(R.layout.paint_shader_bitmap),
+                ShowViewFragment.newInstance(R.layout.paint_porterduff),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
