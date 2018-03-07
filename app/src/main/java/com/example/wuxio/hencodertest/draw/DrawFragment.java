@@ -58,6 +58,7 @@ public class DrawFragment extends Fragment {
                 DrawSubFragment.newInstance(R.layout.draw_color),
                 DrawSubFragment.newInstance(R.layout.draw_circle),
                 DrawSubFragment.newInstance(R.layout.draw_rect),
+                DrawSubFragment.newInstance(R.layout.draw_point),
         };
 
         public DrawAdapter(FragmentManager fm) {
