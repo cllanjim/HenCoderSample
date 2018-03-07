@@ -62,6 +62,7 @@ public class DrawFragment extends Fragment {
                 DrawSubFragment.newInstance(R.layout.draw_oval),
                 DrawSubFragment.newInstance(R.layout.draw_line),
                 DrawSubFragment.newInstance(R.layout.draw_round_rect),
+                DrawSubFragment.newInstance(R.layout.draw_arc),
         };
 
         public DrawAdapter(FragmentManager fm) {
