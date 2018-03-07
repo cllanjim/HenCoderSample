@@ -38,12 +38,13 @@ public class SetColor extends View {
         super.onDraw(canvas);
 
         mPaint.setColor(Color.parseColor("#009688"));
-        canvas.drawRect(30, 30, 230, 180, mPaint);
+        canvas.drawRect(50, 50, 430, 280, mPaint);
 
         mPaint.setColor(Color.parseColor("#FF9800"));
-        canvas.drawLine(300, 30, 450, 180, mPaint);
+        canvas.drawLine(500, 50, 950, 200, mPaint);
 
+        mPaint.setTextSize(50);
         mPaint.setColor(Color.parseColor("#E91E63"));
-        canvas.drawText("HenCoder", 500, 130, mPaint);
+        canvas.drawText("HenCoder", 1000, 130, mPaint);
     }
 }

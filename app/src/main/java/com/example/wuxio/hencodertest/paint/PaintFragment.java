@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
 import com.example.wuxio.hencodertest.BasePagerFragment;
+import com.example.wuxio.hencodertest.R;
+import com.example.wuxio.hencodertest.ShowViewFragment;
 
 /**
  * Created by LiuJin on 2018-03-07:15:13
@@ -27,6 +29,8 @@ public class PaintFragment extends BasePagerFragment {
     class PaintPagerAdapter extends FragmentPagerAdapter {
 
         private Fragment[] mFragments = {
+                ShowViewFragment.newInstance(R.layout.paint_color),
+
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
