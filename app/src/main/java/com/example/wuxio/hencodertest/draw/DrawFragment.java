@@ -66,6 +66,7 @@ public class DrawFragment extends Fragment {
                 DrawSubFragment.newInstance(R.layout.draw_path),
                 DrawSubFragment.newInstance(R.layout.draw_bitmap),
                 DrawSubFragment.newInstance(R.layout.draw_text),
+                DrawSubFragment.newInstance(R.layout.draw_histogram),
         };
 
         public DrawAdapter(FragmentManager fm) {
