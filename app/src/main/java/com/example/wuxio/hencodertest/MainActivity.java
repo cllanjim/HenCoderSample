@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.wuxio.hencodertest.canvas.CanvasFragment;
 import com.example.wuxio.hencodertest.paint.PaintFragment;
+import com.example.wuxio.hencodertest.text.TextFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,12 +76,14 @@ public class MainActivity extends AppCompatActivity {
         private Fragment[] mFragments = {
                 CanvasFragment.newInstance(),
                 PaintFragment.newInstance(),
+                TextFragment.newInstance(),
 
         };
 
         private String[] mTitles = {
                 "canvas",
                 "paint",
+                "text"
         };
 
         Fragment getFragment(int position) {
