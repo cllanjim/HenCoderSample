@@ -102,6 +102,6 @@ public class BitmapPorterDuffShader extends View {
         mPaint.setShader(mShaderSrcAtop);
         canvas.drawRect(mRectF, mPaint);
 
-        //没有效果(因为位置不对,默认就在左上角位置)
+        //没有效果(因为位置不对,图片默认就在左上角位置)
     }
 }
