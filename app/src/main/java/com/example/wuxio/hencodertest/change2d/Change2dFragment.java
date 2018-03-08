@@ -32,6 +32,7 @@ public class Change2dFragment extends BasePagerFragment {
                 ShowViewFragment.newInstance(R.layout.change_translate),
                 ShowViewFragment.newInstance(R.layout.change_scale),
                 ShowViewFragment.newInstance(R.layout.change_skew),
+                ShowViewFragment.newInstance(R.layout.change_matrix),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
