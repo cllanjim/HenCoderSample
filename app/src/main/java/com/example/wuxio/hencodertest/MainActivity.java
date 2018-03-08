@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.example.wuxio.hencodertest.canvas.CanvasFragment;
+import com.example.wuxio.hencodertest.change2d.Change2dFragment;
 import com.example.wuxio.hencodertest.clip.ClipFragment;
 import com.example.wuxio.hencodertest.paint.PaintFragment;
 import com.example.wuxio.hencodertest.text.TextFragment;
@@ -78,14 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 CanvasFragment.newInstance(),
                 PaintFragment.newInstance(),
                 TextFragment.newInstance(),
-                ClipFragment.newInstance()
+                ClipFragment.newInstance(),
+                Change2dFragment.newInstance(),
         };
 
         private String[] mTitles = {
                 "canvas",
                 "paint",
                 "text",
-                "clip"
+                "clip",
+                "2D变换"
         };
 
         Fragment getFragment(int position) {
