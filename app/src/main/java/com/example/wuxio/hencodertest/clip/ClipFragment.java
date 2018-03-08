@@ -30,6 +30,7 @@ public class ClipFragment extends BasePagerFragment {
 
         private Fragment[] mFragments = {
                 ShowViewFragment.newInstance(R.layout.canvas_clip_rect),
+                ShowViewFragment.newInstance(R.layout.canvas_clip_path),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
