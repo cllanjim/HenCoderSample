@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
+import com.example.wuxio.hencodertest.camare.CameraFragment;
 import com.example.wuxio.hencodertest.canvas.CanvasFragment;
 import com.example.wuxio.hencodertest.change2d.Change2dFragment;
 import com.example.wuxio.hencodertest.clip.ClipFragment;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 TextFragment.newInstance(),
                 ClipFragment.newInstance(),
                 Change2dFragment.newInstance(),
+                CameraFragment.newInstance(),
         };
 
         private String[] mTitles = {
@@ -88,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
                 "paint",
                 "text",
                 "clip",
-                "2D变换"
+                "2D变换",
+                "camera"
         };
 
         Fragment getFragment(int position) {
