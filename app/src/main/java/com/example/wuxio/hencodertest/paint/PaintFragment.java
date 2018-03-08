@@ -37,6 +37,7 @@ public class PaintFragment extends BasePagerFragment {
                 ShowViewFragment.newInstance(R.layout.paint_xfermode),
                 ShowViewFragment.newInstance(R.layout.paint_strokecap),
                 ShowViewFragment.newInstance(R.layout.paint_strokejoin),
+                ShowViewFragment.newInstance(R.layout.paint_shadow),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
