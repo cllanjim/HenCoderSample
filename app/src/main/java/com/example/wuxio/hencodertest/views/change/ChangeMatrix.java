@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ public class ChangeMatrix extends View {
 
     private Paint  mPaint;
     private Bitmap mHuluwa;
+    private Matrix mMatrix;
 
     public ChangeMatrix(Context context) {
         this(context, null, 0);
@@ -35,23 +37,21 @@ public class ChangeMatrix extends View {
 
     private void init() {
         mPaint = new Paint();
-
         mHuluwa = BitmapFactory.decodeResource(getResources(), R.drawable.huluwa);
+        mMatrix = new Matrix();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.save();
-        canvas.skew(0.5f, 0f);
-        canvas.drawBitmap(mHuluwa, 0, 0, mPaint);
-        canvas.restore();
+        mMatrix.reset();
+        mMatrix.postTranslate(200,200);
+        mMatrix.postRotate(12);
 
         canvas.save();
-        canvas.translate(100, 1200);
-        canvas.skew(0f, 0.5f);
-        canvas.drawBitmap(mHuluwa, 0, -600, mPaint);
+        canvas.concat(mMatrix);
+        canvas.drawBitmap(mHuluwa, 0, 0, mPaint);
         canvas.restore();
     }
 }
