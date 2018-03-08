@@ -30,6 +30,7 @@ public class TextFragment extends BasePagerFragment {
 
         private Fragment[] mFragments = {
                 ShowViewFragment.newInstance(R.layout.text_static),
+                ShowViewFragment.newInstance(R.layout.text_font_metircs),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {
