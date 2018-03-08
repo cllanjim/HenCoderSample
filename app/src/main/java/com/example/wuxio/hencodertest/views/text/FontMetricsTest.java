@@ -15,7 +15,7 @@ import android.view.View;
  * Created by LiuJin on 2018-03-07:9:51
  */
 
-public class FontMetircsTest extends View {
+public class FontMetricsTest extends View {
 
     private static final String TAG = "FontMetircsTest";
 
@@ -28,15 +28,15 @@ public class FontMetircsTest extends View {
     private String text02 = "测试文本 Test google 159";
     private Rect mRect;
 
-    public FontMetircsTest(Context context) {
+    public FontMetricsTest(Context context) {
         this(context, null, 0);
     }
 
-    public FontMetircsTest(Context context, @Nullable AttributeSet attrs) {
+    public FontMetricsTest(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FontMetircsTest(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public FontMetricsTest(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
