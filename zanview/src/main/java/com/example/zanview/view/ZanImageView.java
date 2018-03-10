@@ -96,6 +96,18 @@ public class ZanImageView extends TintImageView {
     }
 
     /**
+     * @param zan 设置点赞状态,同时更改颜色
+     */
+    public void setZan(boolean zan) {
+        isZan = zan;
+        if (zan) {
+            setColor(mZanColor);
+        } else {
+            setColor(mNoZanColor);
+        }
+    }
+
+    /**
      * 点赞动画
      */
     public void animateZan() {
@@ -212,25 +224,25 @@ public class ZanImageView extends TintImageView {
         static PropertyValuesHolder holderScaleX = PropertyValuesHolder.ofFloat("scaleX", 1f, 1.4f, 1f);
         static PropertyValuesHolder holderScaleY = PropertyValuesHolder.ofFloat("ScaleY", 1f, 1.4f, 1f);
 
-        public static PropertyValuesHolder getZanHolderColor() {
+        static PropertyValuesHolder getZanHolderColor() {
             if (zanHolderColor == null) {
                 zanHolderColor = PropertyValuesHolder.ofInt("color", noZanColor, zanColor);
             }
             return zanHolderColor;
         }
 
-        public static PropertyValuesHolder getNoZanHolderColor() {
+        static PropertyValuesHolder getNoZanHolderColor() {
             if (noZanHolderColor == null) {
                 noZanHolderColor = PropertyValuesHolder.ofInt("color", zanColor, noZanColor);
             }
             return noZanHolderColor;
         }
 
-        public static int getZanColor() {
+        static int getZanColor() {
             return zanColor;
         }
 
-        public static void setZanColor(int zanColor) {
+        static void setZanColor(int zanColor) {
             if (PropertyValuesHolderFactory.zanColor != zanColor) {
                 PropertyValuesHolderFactory.zanColor = zanColor;
                 PropertyValuesHolderFactory.zanHolderColor = PropertyValuesHolder.ofInt("color", noZanColor, zanColor);
@@ -238,11 +250,11 @@ public class ZanImageView extends TintImageView {
             }
         }
 
-        public static int getNoZanColor() {
+        static int getNoZanColor() {
             return noZanColor;
         }
 
-        public static void setNoZanColor(int noZanColor) {
+        static void setNoZanColor(int noZanColor) {
             if (PropertyValuesHolderFactory.noZanColor != noZanColor) {
                 PropertyValuesHolderFactory.noZanColor = noZanColor;
                 PropertyValuesHolderFactory.zanHolderColor = PropertyValuesHolder.ofInt("color", noZanColor, zanColor);
