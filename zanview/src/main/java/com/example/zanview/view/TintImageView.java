@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.lang.reflect.Field;
@@ -35,9 +34,11 @@ public class TintImageView extends android.support.v7.widget.AppCompatImageView 
     }
 
     protected void init() {
-        mTintDrawable = DrawableCompat.wrap(getDrawable()).mutate();
-        try {
 
+        // mutate方法 ? 多个View 会不会爆内存
+        mTintDrawable = DrawableCompat.wrap(getDrawable()).mutate();
+
+        try {
             Class< ? > superclass = getClass().getSuperclass();
             while (superclass != ImageView.class) {
                 superclass = superclass.getSuperclass();
@@ -45,7 +46,7 @@ public class TintImageView extends android.support.v7.widget.AppCompatImageView 
             Field field = superclass.getDeclaredField("mDrawable");
             field.setAccessible(true);
             field.set(this, mTintDrawable);
-            Log.i(TAG, "init:" + "反射成功");
+            //Log.i(TAG, "init:" + "反射成功");
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
