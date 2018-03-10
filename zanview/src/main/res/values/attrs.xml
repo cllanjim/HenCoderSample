@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ZanImageView">
+        <!--颜色如果在 theme 中使用 ZanColors 定义了,将会使用该颜色,如果没有在theme
+        中定义,使用如下的颜色,在theme中有颜色时,可以将 self_color 定义为 true,使用自己定义的颜色-->
+        <!--没有点暂时颜色-->
+        <attr name="no_zan_color" format="color"/>
+        <!--点赞时颜色-->
+        <attr name="zan_color" format="color"/>
+        <!--动画时常-->
+        <attr name="duration" format="integer"/>
+
+        <!--true 时使用自己定义的颜色,不实用Theme中的颜色-->
+        <attr name="self_color" format="boolean"/>
+    </declare-styleable>
+
+    <!--用于theme中指定全局点赞/取消点赞颜色-->
+    <declare-styleable name="ZanColors">
+        <attr name="zanColor" format="color"/>
+        <attr name="noZanColor" format="color"/>
+    </declare-styleable>
+
+</resources>
