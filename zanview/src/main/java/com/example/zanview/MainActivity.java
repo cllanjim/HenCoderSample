@@ -6,20 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.example.zanview.view.ScrollPartTextView;
 import com.example.zanview.view.TintImageView;
 import com.example.zanview.view.ZanImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity";
-    private TintImageView mZanView;
-    private ZanImageView  mZanImageView;
+    private TintImageView      mZanView;
+    private ZanImageView       mZanImageView;
+    private ScrollPartTextView mTextView;
 
     private void assignViews() {
         mZanView = findViewById(R.id.zanView);
         mZanImageView = findViewById(R.id.zanImageView);
         mZanView.setOnClickListener(this);
-//        mZanImageView.setOnClickListener(this);
+        //        mZanImageView.setOnClickListener(this);
+        mTextView = findViewById(R.id.scrollPart);
+        mTextView.setOnClickListener(this);
     }
 
     @Override
@@ -35,9 +39,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.zanView:
                 changeImageColor();
                 break;
+
             //            case R.id.zanImageView:
             //                animateZan();
             //                break;
+
+            case R.id.scrollPart:
+                changeTextView();
+                break;
             default:
                 break;
         }
@@ -55,5 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void changeImageColor() {
         Log.i(TAG, "changeImageColor:" + "");
         mZanView.setColor(Color.RED);
+    }
+
+    private void changeTextView() {
+        mTextView.animateScroll();
     }
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -10,15 +10,21 @@
 
     <com.example.zanview.view.TintImageView
             android:id="@+id/zanView"
-            android:src="@drawable/zan"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="80dp"
+            android:src="@drawable/zan"/>
 
     <com.example.zanview.view.ZanImageView
-            android:layout_marginTop="90dp"
             android:id="@+id/zanImageView"
-            android:src="@drawable/zan"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="80dp"
+            android:src="@drawable/zan"/>
+
+    <com.example.zanview.view.ScrollPartTextView
+            android:textSize="24sp"
+            android:id="@+id/scrollPart"
+            android:layout_width="wrap_content"
+            android:text="0123456789"
+            android:layout_height="wrap_content"/>
 
 </LinearLayout>
