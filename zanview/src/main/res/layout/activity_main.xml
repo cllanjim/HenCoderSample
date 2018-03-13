@@ -14,6 +14,8 @@
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:onClick="zanClick">
 
         <com.example.zanview.view.ZanImageView
@@ -26,8 +28,8 @@
                 android:id="@+id/zanCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:zan_count="56"/>
+                android:textSize="56sp"
+                app:zan_count="64"/>
 
     </LinearLayout>
 
