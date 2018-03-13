@@ -63,6 +63,7 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
     @Override
     protected void onDraw(Canvas canvas) {
 
+
         if (isNeedAnimate()) {
             float fraction = mAnimator.getAnimatedFraction();
             final int maxDy = mPoints[3] - mPoints[1];
@@ -74,7 +75,6 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
             setText(subSequence);
             super.onDraw(canvas);
 
-            canvas.save();
             canvas.clipRect(mPoints[0], mPoints[1] - maxDy, getRight(), mPoints[3] + maxDy);
             //绘制下一个变化的文本
             if (mNextCount - mCount > 0) {
@@ -95,7 +95,6 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
                 setText(String.valueOf(mNextCount));
                 super.onDraw(canvas);
             }
-            canvas.restore();
 
         } else {
             super.onDraw(canvas);

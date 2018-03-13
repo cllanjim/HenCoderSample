@@ -5,17 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.example.zanview.view.ZanCountView;
+import com.example.zanview.view.ZanImageView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-
+    private ZanImageView mZanImageView;
     private ZanCountView mZanCount;
 
     private void assignViews() {
+        mZanImageView = findViewById(R.id.zanImage);
         mZanCount = findViewById(R.id.zanCount);
-        mZanCount.setOnClickListener(this);
     }
 
 
@@ -26,14 +27,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         assignViews();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
 
-            default:
-                break;
+    public void zanClick(View view) {
+
+        if (mZanImageView.isZan()) {
+            mZanCount.subZanCount();
+            mZanImageView.reverseAnimateZan();
+        } else {
+            mZanCount.addZanCount();
+            mZanImageView.animateZan();
         }
-
-        mZanCount.subZanCount();
     }
 }

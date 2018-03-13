@@ -8,7 +8,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.example.zanview.R;
 
@@ -27,7 +26,7 @@ public class ZanImageView extends TintImageView {
     private ObjectAnimator mZanAnimator;
     private ObjectAnimator mNoZanAnimator;
     private ArgbEvaluator  mEvaluator;
-    private ClickEvent     mClickEvent;
+    //private ClickEvent     mClickEvent;
     private boolean        mIsUseSelfColor;
 
     public ZanImageView(Context context) {
@@ -84,8 +83,8 @@ public class ZanImageView extends TintImageView {
      */
     private void initFields() {
         setColor(mNoZanColor);
-        mClickEvent = new ClickEvent();
-        super.setOnClickListener(mClickEvent);
+//        mClickEvent = new ClickEvent();
+//        super.setOnClickListener(mClickEvent);
     }
 
     /**
@@ -178,37 +177,37 @@ public class ZanImageView extends TintImageView {
         }
     }
 
-    @Override
-    public void setOnClickListener(@Nullable OnClickListener l) {
-        mClickEvent.mClickListener = l;
-    }
+//    @Override
+//    public void setOnClickListener(@Nullable OnClickListener l) {
+//        mClickEvent.mClickListener = l;
+//    }
 
     //============================内部类============================
 
     /**
      * 点击事件
      */
-    private class ClickEvent implements View.OnClickListener {
-
-        //代理用户点击事件
-        OnClickListener mClickListener;
-
-        ClickEvent() {
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (isZan) {
-                reverseAnimateZan();
-            } else {
-                animateZan();
-            }
-
-            if (mClickListener != null) {
-                mClickListener.onClick(v);
-            }
-        }
-    }
+//    private class ClickEvent implements View.OnClickListener {
+//
+//        //代理用户点击事件
+//        OnClickListener mClickListener;
+//
+//        ClickEvent() {
+//        }
+//
+//        @Override
+//        public void onClick(View v) {
+//            if (isZan) {
+//                reverseAnimateZan();
+//            } else {
+//                animateZan();
+//            }
+//
+//            if (mClickListener != null) {
+//                mClickListener.onClick(v);
+//            }
+//        }
+//    }
 
     /**
      * 用于提供全局PropertyValuesHolder
