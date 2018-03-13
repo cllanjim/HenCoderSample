@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.example.zanview.R;
 
@@ -73,8 +74,8 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
             setText(subSequence);
             super.onDraw(canvas);
 
+            canvas.save();
             canvas.clipRect(mPoints[0], mPoints[1] - maxDy, getRight(), mPoints[3] + maxDy);
-
             //绘制下一个变化的文本
             if (mNextCount - mCount > 0) {
                 //如果是增加向上滚动,绘制到下边
@@ -94,6 +95,7 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
                 setText(String.valueOf(mNextCount));
                 super.onDraw(canvas);
             }
+            canvas.restore();
 
         } else {
             super.onDraw(canvas);
@@ -155,11 +157,12 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
         //计算需要切断的位置
         final int length = s2.length();
         for (int i = 0; i < length; i++) {
-            if (s1.charAt(i) != s2.charAt(i)) {
+            int i1 = s1.charAt(i) - s2.charAt(i);
+            if (i1 != 0) {
                 mStartIndex = i;
             }
         }
-
+        Log.i(TAG, "subZanCount:当前: " + mCount + " 下一个:" + mNextCount + " index: " + mStartIndex);
         getTextCoordinate(mStartIndex);
         start();
     }
@@ -195,6 +198,7 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
         } else {
             mPoints[2] = (int) layout.getPrimaryHorizontal(position + 1);
         }
+        Log.i(TAG, "getTextCoordinate:" + "坐标:" + Arrays.toString(mPoints));
     }
 
     @Override
@@ -205,6 +209,7 @@ public class ZanCountView extends android.support.v7.widget.AppCompatTextView im
     @Override
     public void onAnimationEnd(Animator animation) {
         mCount = mNextCount;
+        setText(String.valueOf(mNextCount));
     }
 
     @Override
