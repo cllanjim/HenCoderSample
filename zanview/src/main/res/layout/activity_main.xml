@@ -8,23 +8,16 @@
         android:orientation="vertical"
         tools:context="com.example.zanview.MainActivity">
 
-    <com.example.zanview.view.TintImageView
-            android:id="@+id/zanView"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/zan"/>
+    <com.example.zanview.view.ZanCountView
+            android:id="@+id/zanCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            app:zan_count="56"/>
 
     <com.example.zanview.view.ZanImageView
-            android:id="@+id/zanImageView"
+            android:src="@drawable/zan"
             android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/zan"/>
-
-    <com.example.zanview.view.ScrollPartTextView
-            android:textSize="24sp"
-            android:id="@+id/scrollPart"
-            android:layout_width="wrap_content"
-            android:text="0123456789"
-            android:layout_height="wrap_content"/>
+            android:layout_height="80dp"/>
 
 </LinearLayout>

@@ -21,4 +21,8 @@
         <attr name="noZanColor" format="color"/>
     </declare-styleable>
 
+
+    <declare-styleable name="ZanCountView">
+        <attr name="zan_count" format="integer"/>
+    </declare-styleable>
 </resources>
