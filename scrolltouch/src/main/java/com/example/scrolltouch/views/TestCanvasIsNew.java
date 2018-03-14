@@ -49,7 +49,30 @@ public class TestCanvasIsNew extends View {
         if (isRunning()) {
             float fraction = mAnimator.getAnimatedFraction();
             float dy = fraction * fontSpacing;
+            canvas.clipRect(0, getPaddingTop(), getRight(), lineHeight);
             canvas.translate(0, dy);
+            canvas.drawText(
+                    String.valueOf(56),
+                    getPaddingLeft(),
+                    lineHeight,
+                    mPaint
+            );
+
+            canvas.drawText(
+                    String.valueOf(55),
+                    getPaddingLeft(),
+                    lineHeight - fontSpacing,
+                    mPaint
+            );
+
+            canvas.drawText(
+                    String.valueOf(57),
+                    getPaddingLeft(),
+                    lineHeight + fontSpacing,
+                    mPaint
+            );
+
+            invalidate();
         }
 
         canvas.drawText(
@@ -58,24 +81,6 @@ public class TestCanvasIsNew extends View {
                 lineHeight,
                 mPaint
         );
-
-        canvas.drawText(
-                String.valueOf(57),
-                getPaddingLeft(),
-                lineHeight + fontSpacing,
-                mPaint
-        );
-
-        canvas.drawText(
-                String.valueOf(55),
-                getPaddingLeft(),
-                lineHeight - fontSpacing,
-                mPaint
-        );
-
-        if (isRunning()) {
-            invalidate();
-        }
     }
 
     public void start() {
