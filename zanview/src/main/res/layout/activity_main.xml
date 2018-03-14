@@ -35,12 +35,13 @@
 
     <com.example.zanview.view.ZanCountViewV2
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="16dp"
             android:background="@android:color/black"
             android:onClick="zanClick"
             app:scroll_duration="560"
-            app:number="109"
+            android:paddingTop="50dp"
+            app:number="100"
             app:text_size="24sp"
             app:text_color="@color/colorPrimary"/>
 

@@ -2,6 +2,7 @@ package com.example.zanview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
@@ -35,6 +36,7 @@ public class ZanCountViewV2 extends ZanCountView {
     protected void init(Context context, AttributeSet attrs) {
         super.init(context, attrs);
         mBaseOffset = mPaint.measureText(String.valueOf(9));
+        mPaint.setStyle(Paint.Style.STROKE);
     }
 
     @Override
@@ -60,12 +62,18 @@ public class ZanCountViewV2 extends ZanCountView {
                 //此处是减小时调用,向下滚动
                 canvas.translate(0, dy);
                 if (position > 0) {
+                    //先绘制左边不跳动的文本
                     canvas.drawText(String.valueOf(mLeftInt), 0, textHeight - dy, mPaint);
-                    canvas.clipRect(right, paddingTop - fontSpacing, getRight(), textHeight);
+                    //裁剪一下,将左边已经绘制的部分排除出去
+                    canvas.clipRect(right, paddingTop - dy, getRight(), textHeight - dy);
+                    //绘制文本,因为左边已经裁减,只会绘制文本的右边部分
+                    //先绘制当前的右边部分
                     canvas.drawText(String.valueOf(mCurrentInt), 0, textHeight, mPaint);
+                    //后绘制下一个显示数字的右边部分,高度相差一个文本行高
                     canvas.drawText(String.valueOf(mNextInt), 0, textHeight - fontSpacing, mPaint);
                 } else {
-                    canvas.clipRect(right, paddingTop - fontSpacing, getRight(), textHeight);
+                    //先裁切一下,否则如果 宽度/高度 大于 内容高度/宽度,绘制的两行文本都会显示,裁剪之后,只会在裁减区绘制
+                    canvas.clipRect(right, paddingTop - dy, getRight(), textHeight - dy);
                     canvas.drawText(String.valueOf(current), 0, textHeight, mPaint);
                     canvas.drawText(String.valueOf(next), 0, textHeight - fontSpacing, mPaint);
                 }
@@ -75,11 +83,11 @@ public class ZanCountViewV2 extends ZanCountView {
                 canvas.translate(0, -dy);
                 if (position > 0) {
                     canvas.drawText(String.valueOf(mLeftInt), 0, textHeight + dy, mPaint);
-                    canvas.clipRect(right, paddingTop, getRight(), textHeight + fontSpacing);
+                    canvas.clipRect(right, paddingTop + dy, getRight(), textHeight + dy);
                     canvas.drawText(String.valueOf(mCurrentInt), 0, textHeight, mPaint);
                     canvas.drawText(String.valueOf(mNextInt), 0, textHeight + fontSpacing, mPaint);
                 } else {
-                    canvas.clipRect(0, paddingTop, getRight(), textHeight + fontSpacing);
+                    canvas.clipRect(0, paddingTop + dy, getRight(), textHeight + dy);
                     canvas.drawText(String.valueOf(current), 0, textHeight, mPaint);
                     canvas.drawText(String.valueOf(next), 0, textHeight + fontSpacing, mPaint);
                 }
@@ -97,7 +105,6 @@ public class ZanCountViewV2 extends ZanCountView {
                 textHeight,
                 mPaint
         );
-        //Log.i(TAG, "onDraw:" + "没有动画");
     }
 
     //============================计算断点============================
