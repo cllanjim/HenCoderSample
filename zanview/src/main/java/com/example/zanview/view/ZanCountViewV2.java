@@ -1,4 +1,4 @@
-package com.example.scrolltouch.views;
+package com.example.zanview.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -17,21 +17,31 @@ import com.example.common.BaseMeasureView;
  * @author wuxio
  */
 
-public class TestCanvasIsNew extends BaseMeasureView {
+public class ZanCountViewV2 extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
     private Paint         mPaint;
     private ValueAnimator mAnimator;
 
-    public TestCanvasIsNew(Context context) {
+    /**
+     * 当前显示的数字
+     */
+    private int mCurrentInt;
+
+    /**
+     * 下一个显示的数字
+     */
+    private int mNextInt;
+
+    public ZanCountViewV2(Context context) {
         this(context, null, 0);
     }
 
-    public TestCanvasIsNew(Context context, @Nullable AttributeSet attrs) {
+    public ZanCountViewV2(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TestCanvasIsNew(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ZanCountViewV2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
