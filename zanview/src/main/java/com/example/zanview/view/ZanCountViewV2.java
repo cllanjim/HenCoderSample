@@ -2,7 +2,9 @@ package com.example.zanview.view;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.example.common.BaseMeasureView;
+import com.example.zanview.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -58,9 +61,16 @@ public class ZanCountViewV2 extends BaseMeasureView {
 
     private void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setTextSize(100);
 
-        mNextInt = mCurrentInt = 99;
+        TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV2);
+        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountViewV2_number, 0);
+        mDuration = typedArray.getInt(R.styleable.ZanCountViewV2_scroll_duration, 500);
+        float textSize = typedArray.getDimension(R.styleable.ZanCountViewV2_text_size, 24);
+        mPaint.setTextSize(textSize);
+        int color = typedArray.getColor(R.styleable.ZanCountViewV2_text_color, Color.BLACK);
+        mPaint.setColor(color);
+        typedArray.recycle();
+
     }
 
     /**

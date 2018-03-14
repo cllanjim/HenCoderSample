@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void zanClick(View view) {
-//        ((ZanCountViewV2) view).add();
+        ((ZanCountViewV2) view).add();
 //        ((ZanCountViewV2) view).sub();
-        ((ZanCountViewV2) view).resize();
+//        ((ZanCountViewV2) view).resize();
     }
 }
