@@ -6,8 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.animation.LinearInterpolator;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 
 import com.example.common.BaseMeasureView;
 
@@ -33,6 +33,16 @@ public class ZanCountViewV2 extends BaseMeasureView {
      */
     private int mNextInt;
 
+    /**
+     * true : 宽度为 wrap_content 模式时,修改了宽度模式,需要根据此标记还原
+     */
+    private boolean mResized;
+
+    /**
+     * 动画时常
+     */
+    private int mDuration = 500;
+
     public ZanCountViewV2(Context context) {
         this(context, null, 0);
     }
@@ -46,84 +56,151 @@ public class ZanCountViewV2 extends BaseMeasureView {
         init(context, attrs);
     }
 
+    private void init(Context context, AttributeSet attrs) {
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setTextSize(100);
+
+        mNextInt = mCurrentInt = 99;
+    }
+
+    /**
+     * 预留出一部分宽度,例如:当数字是 99 时,加 1 后变成100,宽度会不够,所以预留出一个数字宽度,
+     * 也可以在变更数字时 {@link #requestLayout()} 重新计算宽度,但是影响性能,预留出更好点
+     */
     @Override
     protected int getAtMostWidth() {
-        return 0;
+        return (int) (mPaint.measureText(String.valueOf(mCurrentInt * 10 + 9)) + 1f);
     }
 
     @Override
     protected int getAtMostHeight() {
-        return 0;
+        return (int) (mPaint.getFontSpacing() + 1f);
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setTextSize(100);
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (mResized) {
+            getLayoutParams().width = -2;
+            mResized = false;
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
 
         final float fontSpacing = mPaint.getFontSpacing();
+        //显示文本的y坐标
         float lineHeight = fontSpacing + getPaddingTop();
+        final int paddingLeft = getPaddingLeft();
 
         if (isRunning()) {
             float fraction = mAnimator.getAnimatedFraction();
             float dy = fraction * fontSpacing;
             canvas.clipRect(0, getPaddingTop(), getRight(), lineHeight);
-            canvas.translate(0, dy);
+            if (mCurrentInt > mNextInt) {
+                canvas.translate(0, dy);
+            } else {
+                canvas.translate(0, -dy);
+            }
             canvas.drawText(
-                    String.valueOf(56),
-                    getPaddingLeft(),
+                    String.valueOf(mCurrentInt),
+                    paddingLeft,
                     lineHeight,
                     mPaint
             );
 
             canvas.drawText(
-                    String.valueOf(55),
-                    getPaddingLeft(),
+                    String.valueOf(mCurrentInt - 1),
+                    paddingLeft,
                     lineHeight - fontSpacing,
                     mPaint
             );
 
             canvas.drawText(
-                    String.valueOf(57),
-                    getPaddingLeft(),
+                    String.valueOf(mCurrentInt + 1),
+                    paddingLeft,
                     lineHeight + fontSpacing,
                     mPaint
             );
-
+            //Log.i(TAG, "onDraw:" + "有动画");
             invalidate();
+            return;
         }
 
+        //动画完成后会回调一次onDraw,修正当前值为 mNextInt
+        mCurrentInt = mNextInt;
         canvas.drawText(
-                String.valueOf(56),
-                getPaddingLeft(),
+                String.valueOf(mCurrentInt),
+                paddingLeft,
                 lineHeight,
                 mPaint
         );
+        //Log.i(TAG, "onDraw:" + "没有动画");
     }
 
-    public void start() {
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (isRunning()) {
+            mAnimator.cancel();
+        }
+    }
+
+    //============================动画相关API============================
+
+    private void start() {
         if (mAnimator == null) {
-            getAnimator();
+            initAnimator();
         }
         if (!mAnimator.isRunning()) {
-            mAnimator.setDuration(1500).start();
-            Log.i(TAG, "start:" + "");
+            mAnimator.setDuration(mDuration).start();
             invalidate();
+            //Log.i(TAG, "start:" + "invalidate ");
         }
     }
 
-    private ValueAnimator getAnimator() {
+    private void initAnimator() {
         if (mAnimator == null) {
+            // TODO: 2018-03-14 是否可以将其提取成 static,反正只是使用一个进度值而已
             mAnimator = ValueAnimator.ofInt(0, 12);
-            mAnimator.setInterpolator(new LinearInterpolator());
+            mAnimator.setInterpolator(new AccelerateInterpolator());
         }
-        return mAnimator;
     }
 
     private boolean isRunning() {
         return mAnimator != null && mAnimator.isRunning();
+    }
+
+    //============================对外暴露方法============================
+
+    /**
+     * 减少数字
+     */
+    public void sub() {
+        start();
+        mNextInt = mCurrentInt - 1;
+    }
+
+    /**
+     * 增加数字
+     */
+    public void add() {
+        start();
+        mNextInt = mCurrentInt + 1;
+    }
+
+    /**
+     * 当装不下数字时,可以调用该方法,增加一个数字的宽度
+     */
+    public void resize() {
+        ViewGroup.LayoutParams params = getLayoutParams();
+        int width = params.width;
+        if (width == -2) {
+            int add = (int) (mPaint.measureText(String.valueOf(9)) + 1);
+            params.width = getWidth() + add;
+            mResized = true;
+            requestLayout();
+        }
     }
 }
