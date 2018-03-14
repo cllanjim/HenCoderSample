@@ -16,10 +16,10 @@ import com.example.zanview.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
+ * 显示一个数字,可以上下滚动 增加/减少 数字
  *
  * @author wuxio
  */
-
 public class ZanCountView extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
@@ -70,7 +70,6 @@ public class ZanCountView extends BaseMeasureView {
         typedArray.recycle();
         mPaint.setTextSize(textSize);
         mPaint.setColor(color);
-
     }
 
     /**
