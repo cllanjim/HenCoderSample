@@ -23,28 +23,28 @@ import com.example.zanview.R;
 public class ZanCountView extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
-    private Paint         mPaint;
-    private ValueAnimator mAnimator;
+    protected Paint         mPaint;
+    protected ValueAnimator mAnimator;
 
     /**
      * 当前显示的数字
      */
-    private int mCurrentInt;
+    protected int mCurrentInt;
 
     /**
      * 下一个显示的数字
      */
-    private int mNextInt;
+    protected int mNextInt;
 
     /**
      * true : 宽度为 wrap_content 模式时,修改了宽度模式,需要根据此标记还原
      */
-    private boolean mResized;
+    protected boolean mResized;
 
     /**
      * 动画时常
      */
-    private int mDuration = 500;
+    protected int mDuration = 500;
 
     public ZanCountView(Context context) {
         this(context, null, 0);
@@ -59,7 +59,7 @@ public class ZanCountView extends BaseMeasureView {
         init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
+    protected void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV2);
@@ -158,7 +158,7 @@ public class ZanCountView extends BaseMeasureView {
 
     //============================动画相关API============================
 
-    private void start() {
+    protected void start() {
         if (mAnimator == null) {
             initAnimator();
         }
@@ -169,7 +169,7 @@ public class ZanCountView extends BaseMeasureView {
         }
     }
 
-    private void initAnimator() {
+    protected void initAnimator() {
         if (mAnimator == null) {
             // TODO: 2018-03-14 是否可以将其提取成 static,反正只是使用一个进度值而已
             mAnimator = ValueAnimator.ofInt(0, 12);
@@ -177,7 +177,7 @@ public class ZanCountView extends BaseMeasureView {
         }
     }
 
-    private boolean isRunning() {
+    protected boolean isRunning() {
         return mAnimator != null && mAnimator.isRunning();
     }
 

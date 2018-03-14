@@ -1,18 +1,9 @@
 package com.example.zanview.view;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-
-import com.example.common.BaseMeasureView;
-import com.example.zanview.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -20,31 +11,12 @@ import com.example.zanview.R;
  * @author wuxio
  */
 
-public class ZanCountViewV2 extends BaseMeasureView {
+public class ZanCountViewV2 extends ZanCountView {
 
-    private static final String TAG = "TestCanvasIsNew";
-    private Paint         mPaint;
-    private ValueAnimator mAnimator;
-
-    /**
-     * 当前显示的数字
-     */
-    private int mCurrentInt;
-
-    /**
-     * 下一个显示的数字
-     */
-    private int mNextInt;
-
-    /**
-     * true : 宽度为 wrap_content 模式时,修改了宽度模式,需要根据此标记还原
-     */
-    private boolean mResized;
-
-    /**
-     * 动画时常
-     */
-    private int mDuration = 500;
+    private static final String TAG = "ZanCountViewV2";
+    private int   mCutPosition;
+    private float mBaseOffset;
+    private int   mLeftInt;
 
     public ZanCountViewV2(Context context) {
         this(context, null, 0);
@@ -59,41 +31,10 @@ public class ZanCountViewV2 extends BaseMeasureView {
         init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attrs) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV2);
-        mDuration = typedArray.getInt(R.styleable.ZanCountViewV2_scroll_duration, 500);
-        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountViewV2_number, 0);
-        float textSize = typedArray.getDimension(R.styleable.ZanCountViewV2_text_size, 24);
-        int color = typedArray.getColor(R.styleable.ZanCountViewV2_text_color, Color.BLACK);
-        typedArray.recycle();
-        mPaint.setTextSize(textSize);
-        mPaint.setColor(color);
-
-    }
-
-    /**
-     * 预留出一部分宽度,例如:当数字是 99 时,加 1 后变成100,宽度会不够,所以预留出一个数字宽度,
-     * 也可以在变更数字时 {@link #requestLayout()} 重新计算宽度,但是影响性能,预留出更好点
-     */
     @Override
-    protected int getAtMostWidth() {
-        return (int) (mPaint.measureText(String.valueOf(mCurrentInt * 10 + 9)) + 1f);
-    }
-
-    @Override
-    protected int getAtMostHeight() {
-        return (int) (mPaint.getFontSpacing() + 1f);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        if (mResized) {
-            getLayoutParams().width = -2;
-            mResized = false;
-        }
+    protected void init(Context context, AttributeSet attrs) {
+        super.init(context, attrs);
+        mBaseOffset = mPaint.measureText(String.valueOf(9));
     }
 
     @Override
@@ -101,39 +42,49 @@ public class ZanCountViewV2 extends BaseMeasureView {
 
         final float fontSpacing = mPaint.getFontSpacing();
         //显示文本的y坐标
-        float lineHeight = fontSpacing + getPaddingTop();
+        final int paddingTop = getPaddingTop();
         final int paddingLeft = getPaddingLeft();
+        final float textHeight = fontSpacing + paddingTop;
+
+        final int current = mCurrentInt;
+        final int next = mNextInt;
+        final int position = mCutPosition;
+        final float offset = mBaseOffset;
 
         if (isRunning()) {
             float fraction = mAnimator.getAnimatedFraction();
-            float dy = fraction * fontSpacing;
-            canvas.clipRect(getWidth() / 2, getPaddingTop(), getRight(), lineHeight);
+            final float dy = fraction * fontSpacing;
+            final float right = paddingLeft + position * offset;
+
             if (mCurrentInt > mNextInt) {
+                //此处是减小时调用,向下滚动
                 canvas.translate(0, dy);
+                if (position > 0) {
+                    canvas.drawText(String.valueOf(mLeftInt), 0, textHeight - dy, mPaint);
+                    canvas.clipRect(right, paddingTop - fontSpacing, getRight(), textHeight);
+                    canvas.drawText(String.valueOf(mCurrentInt), 0, textHeight, mPaint);
+                    canvas.drawText(String.valueOf(mNextInt), 0, textHeight - fontSpacing, mPaint);
+                } else {
+                    canvas.clipRect(right, paddingTop - fontSpacing, getRight(), textHeight);
+                    canvas.drawText(String.valueOf(current), 0, textHeight, mPaint);
+                    canvas.drawText(String.valueOf(next), 0, textHeight - fontSpacing, mPaint);
+                }
+
             } else {
+                //此处是增大时调用,向上滚动
                 canvas.translate(0, -dy);
+                if (position > 0) {
+                    canvas.drawText(String.valueOf(mLeftInt), 0, textHeight + dy, mPaint);
+                    canvas.clipRect(right, paddingTop, getRight(), textHeight + fontSpacing);
+                    canvas.drawText(String.valueOf(mCurrentInt), 0, textHeight, mPaint);
+                    canvas.drawText(String.valueOf(mNextInt), 0, textHeight + fontSpacing, mPaint);
+                } else {
+                    canvas.clipRect(0, paddingTop, getRight(), textHeight + fontSpacing);
+                    canvas.drawText(String.valueOf(current), 0, textHeight, mPaint);
+                    canvas.drawText(String.valueOf(next), 0, textHeight + fontSpacing, mPaint);
+                }
             }
-            canvas.drawText(
-                    String.valueOf(mCurrentInt),
-                    paddingLeft,
-                    lineHeight,
-                    mPaint
-            );
 
-            canvas.drawText(
-                    String.valueOf(mCurrentInt - 1),
-                    paddingLeft,
-                    lineHeight - fontSpacing,
-                    mPaint
-            );
-
-            canvas.drawText(
-                    String.valueOf(mCurrentInt + 1),
-                    paddingLeft,
-                    lineHeight + fontSpacing,
-                    mPaint
-            );
-            //Log.i(TAG, "onDraw:" + "有动画");
             invalidate();
             return;
         }
@@ -143,43 +94,39 @@ public class ZanCountViewV2 extends BaseMeasureView {
         canvas.drawText(
                 String.valueOf(mCurrentInt),
                 paddingLeft,
-                lineHeight,
+                textHeight,
                 mPaint
         );
         //Log.i(TAG, "onDraw:" + "没有动画");
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (isRunning()) {
-            mAnimator.cancel();
-        }
-    }
+    //============================计算断点============================
 
-    //============================动画相关API============================
+    /**
+     * 此方法由类自己调用,辅助计算文字断点位置
+     *
+     * @return 断点位置
+     */
+    protected void findOutCutPosition() {
+        String s = String.valueOf(mCurrentInt);
+        String s1 = String.valueOf(mNextInt);
 
-    private void start() {
-        if (mAnimator == null) {
-            initAnimator();
+        mCutPosition = 0;
+        int j = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++) {
+            char c = s.charAt(i);
+            char c1 = s1.charAt(i);
+            if (c - c1 != 0) {
+                mCutPosition = i;
+                j = i;
+                break;
+            }
         }
-        if (!mAnimator.isRunning()) {
-            mAnimator.setDuration(mDuration).start();
-            invalidate();
-            //Log.i(TAG, "start:" + "invalidate ");
-        }
-    }
 
-    private void initAnimator() {
-        if (mAnimator == null) {
-            // TODO: 2018-03-14 是否可以将其提取成 static,反正只是使用一个进度值而已
-            mAnimator = ValueAnimator.ofInt(0, 12);
-            mAnimator.setInterpolator(new AccelerateInterpolator());
+        if (j > 0) {
+            mLeftInt = mCurrentInt / (int) (Math.pow(10, (length - j)));
         }
-    }
-
-    private boolean isRunning() {
-        return mAnimator != null && mAnimator.isRunning();
     }
 
     //============================对外暴露方法============================
@@ -187,30 +134,21 @@ public class ZanCountViewV2 extends BaseMeasureView {
     /**
      * 减少数字
      */
+    @Override
     public void sub() {
         start();
         mNextInt = mCurrentInt - 1;
+        findOutCutPosition();
+
     }
 
     /**
      * 增加数字
      */
+    @Override
     public void add() {
         start();
         mNextInt = mCurrentInt + 1;
-    }
-
-    /**
-     * 当装不下数字时,可以调用该方法,增加一个数字的宽度
-     */
-    public void resize() {
-        ViewGroup.LayoutParams params = getLayoutParams();
-        int width = params.width;
-        if (width == -2) {
-            int add = (int) (mPaint.measureText(String.valueOf(9)) + 1);
-            params.width = getWidth() + add;
-            mResized = true;
-            requestLayout();
-        }
+        findOutCutPosition();
     }
 }

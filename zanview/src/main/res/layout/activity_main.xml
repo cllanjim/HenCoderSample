@@ -40,7 +40,7 @@
             android:background="@android:color/black"
             android:onClick="zanClick"
             app:scroll_duration="560"
-            app:number="99"
+            app:number="109"
             app:text_size="24sp"
             app:text_color="@color/colorPrimary"/>
 
