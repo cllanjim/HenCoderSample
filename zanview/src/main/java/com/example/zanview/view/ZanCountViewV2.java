@@ -63,13 +63,13 @@ public class ZanCountViewV2 extends BaseMeasureView {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV2);
-        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountViewV2_number, 0);
         mDuration = typedArray.getInt(R.styleable.ZanCountViewV2_scroll_duration, 500);
+        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountViewV2_number, 0);
         float textSize = typedArray.getDimension(R.styleable.ZanCountViewV2_text_size, 24);
-        mPaint.setTextSize(textSize);
         int color = typedArray.getColor(R.styleable.ZanCountViewV2_text_color, Color.BLACK);
-        mPaint.setColor(color);
         typedArray.recycle();
+        mPaint.setTextSize(textSize);
+        mPaint.setColor(color);
 
     }
 
@@ -107,7 +107,7 @@ public class ZanCountViewV2 extends BaseMeasureView {
         if (isRunning()) {
             float fraction = mAnimator.getAnimatedFraction();
             float dy = fraction * fontSpacing;
-            canvas.clipRect(0, getPaddingTop(), getRight(), lineHeight);
+            canvas.clipRect(getWidth() / 2, getPaddingTop(), getRight(), lineHeight);
             if (mCurrentInt > mNextInt) {
                 canvas.translate(0, dy);
             } else {
