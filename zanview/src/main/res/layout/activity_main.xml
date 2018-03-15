@@ -8,41 +8,10 @@
         android:orientation="vertical"
         tools:context="com.example.zanview.MainActivity">
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:orientation="horizontal"-->
-    <!--android:gravity="center"-->
-    <!--android:paddingLeft="8dp"-->
-    <!--android:paddingRight="8dp"-->
-    <!--android:onClick="zanClick">-->
-
-    <!--<com.example.zanview.view.ZanImageView-->
-    <!--android:id="@+id/zanImage"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:src="@drawable/zan"/>-->
-
-    <!--<com.example.zanview.view.ZanCountView-->
-    <!--android:id="@+id/zanCount"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:textSize="56sp"-->
-    <!--app:zan_count="64"/>-->
-
-    <!--</LinearLayout>-->
-
-    <com.example.zanview.view.ZanCountViewV2
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+    <com.example.zanview.view.ZanCountViewV3
             android:layout_margin="16dp"
-            android:background="@android:color/black"
-            android:onClick="zanClick"
-            app:scroll_duration="560"
-            android:paddingTop="50dp"
-            app:number="100"
-            app:text_size="24sp"
-            app:text_color="@color/colorPrimary"/>
+            android:background="@color/lightcyan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 </FrameLayout>
