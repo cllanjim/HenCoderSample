@@ -27,7 +27,11 @@ public class ZanCountViewV3 extends BaseMeasureView {
     private   Scroller        mScroller;
     private   VelocityTracker mTracker;
 
-    private float scrollDistance;
+    private float       mScrollDistance;
+    private PaintHelper mPaintHelper;
+
+    private int   mText;
+    private float mY;
 
     public ZanCountViewV3(Context context) {
         this(context, null, 0);
@@ -44,6 +48,11 @@ public class ZanCountViewV3 extends BaseMeasureView {
 
     protected void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setTextSize(150);
+        float fontSpacing = mPaint.getFontSpacing();
+        mPaintHelper = new PaintHelper(0, 500, fontSpacing);
+        mY = getPaddingTop() + fontSpacing;
+
         mScroller = new Scroller(context);
     }
 
@@ -59,7 +68,8 @@ public class ZanCountViewV3 extends BaseMeasureView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.i(TAG, "onDraw:" + "");
+
+        canvas.drawText(String.valueOf(mText), 50, mY, mPaint);
     }
 
     @Override
@@ -71,11 +81,13 @@ public class ZanCountViewV3 extends BaseMeasureView {
             int y = mScroller.getCurrY();
             float v = y - lastY;
             lastY = y;
-            scrollDistance += v;
+            float v1 = mScrollDistance += v;
+            mPaintHelper.update(mScrollDistance);
+
             invalidate();
         }
 
-        String format = String.format(Locale.CHINA, "%.4f", scrollDistance);
+        String format = String.format(Locale.CHINA, "%.4f", mScrollDistance);
         Log.i(TAG, "computeScroll:" + format);
     }
 
@@ -112,7 +124,8 @@ public class ZanCountViewV3 extends BaseMeasureView {
                 lastX = x;
                 lastY = y;
 
-                scrollDistance += disY;
+                float v = mScrollDistance += disY;
+                mPaintHelper.update(mScrollDistance);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
@@ -148,6 +161,47 @@ public class ZanCountViewV3 extends BaseMeasureView {
         super.onDetachedFromWindow();
         if (mTracker != null) {
             mTracker.recycle();
+        }
+    }
+
+    //============================内部类============================
+    class PaintHelper {
+
+        int   start;
+        int   end;
+        float totalDistance;
+        float fontSpacing;
+
+        public PaintHelper(int start, int end, float fontSpacing) {
+            this.start = start;
+            this.end = end;
+            this.fontSpacing = fontSpacing;
+            totalDistance = (end - start) * fontSpacing;
+        }
+
+        public void setFontSpacing(float fontSpacing) {
+            resetTotal(start, end, fontSpacing);
+            this.fontSpacing = fontSpacing;
+        }
+
+        public void setStart(int start) {
+            this.start = start;
+            resetTotal(start, end, fontSpacing);
+        }
+
+        public void setEnd(int end) {
+            this.end = end;
+            resetTotal(start, end, fontSpacing);
+        }
+
+        private void resetTotal(int start, int end, float fontSpacing) {
+            totalDistance = fontSpacing * (end - start);
+        }
+
+        public void update(float distance) {
+            float v = distance * 2 / totalDistance;
+            float v1 = start + end * v;
+            mText = (int) v1;
         }
     }
 }
