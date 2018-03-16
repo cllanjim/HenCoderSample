@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="lightcyan">#e0ffff</color><!--亮青色 -->
+    <color name="gold">#ffd700</color><!--金色 -->
 </resources>

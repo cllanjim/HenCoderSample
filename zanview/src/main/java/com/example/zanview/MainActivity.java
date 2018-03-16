@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-
     public void zanClick(View view) {
 //        ((ZanCountViewV2) view).add();
 //        ((ZanCountViewV2) view).sub();

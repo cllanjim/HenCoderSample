@@ -1,7 +1,9 @@
 package com.example.zanview.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -10,7 +12,9 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
+import com.example.common.BaseLineUtil;
 import com.example.common.BaseMeasureView;
+import com.example.zanview.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -32,7 +36,6 @@ public class ZanCountViewV4 extends BaseMeasureView {
      * 最小fling速度
      */
     private int             mMinimumFlingVelocity;
-    private int             mTouchSlop;
 
     /**
      * onDraw 中从该类获取绘制的文本,和y坐标偏移
@@ -41,7 +44,7 @@ public class ZanCountViewV4 extends BaseMeasureView {
     /**
      * 将要绘制的数字
      */
-    private int         mText;
+    private int         mCurrentInt;
     /**
      * 绘制文字的y方向坐标
      */
@@ -74,36 +77,58 @@ public class ZanCountViewV4 extends BaseMeasureView {
         init(context, attrs);
     }
 
+    /**
+     * 初始化变量,获取属性
+     */
     protected void init(Context context, AttributeSet attrs) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setTextSize(150);
-        mFontSpacing = mPaint.getFontSpacing();
-        mPaintHelper = new PaintHelper(0, 10, mFontSpacing);
-        mYDefault = mY = getPaddingTop() + mFontSpacing;
 
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV4);
+        float size = typedArray.getDimension(R.styleable.ZanCountViewV4_size, 12);
+        mPaint.setTextSize(size);
+        int color = typedArray.getColor(R.styleable.ZanCountViewV4_color, Color.BLACK);
+        mPaint.setColor(color);
+        int min = typedArray.getInteger(R.styleable.ZanCountViewV4_min, 0);
+        int max = typedArray.getInteger(R.styleable.ZanCountViewV4_max, 10);
+        int current = mCurrentInt = typedArray.getInteger(R.styleable.ZanCountViewV4_start, 0);
+        mFontSpacing = mPaint.getFontSpacing();
+        mPaintHelper = new PaintHelper(min, max, mFontSpacing, current);
+        typedArray.recycle();
+
+        mYDefault = mY = getPaddingTop() + BaseLineUtil.getBaseLine(mPaint);
         mScroller = new Scroller(context);
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
-        mTouchSlop = configuration.getScaledTouchSlop();
     }
 
     @Override
     protected int getAtMostWidth() {
-        return 500;
+        return (int) (mPaint.measureText(String.valueOf(mPaintHelper.end)) + 1);
     }
 
     @Override
     protected int getAtMostHeight() {
-        return 500;
+        return (int) (mFontSpacing + 1);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.clipRect(0, getPaddingTop(), getRight(), mYDefault);
-        canvas.drawText(String.valueOf(mText), 50, mY, mPaint);
-        canvas.drawText(String.valueOf(mText + 1), 50, mY - mFontSpacing, mPaint);
-        canvas.drawText(String.valueOf(mText - 1), 50, mY + mFontSpacing, mPaint);
-        //mY = mYDefault;
+        int paddingTop = getPaddingTop();
+        int paddingLeft = getPaddingLeft();
+
+        float fontSpacing = mFontSpacing;
+        int current = mCurrentInt;
+        float y = mY;
+        Paint paint = mPaint;
+
+        //裁剪出一行的空间
+        canvas.clipRect(0, paddingTop, getRight(), paddingTop + fontSpacing);
+        //根据偏移量 mY ,绘制数字 mCurrentInt
+        canvas.drawText(String.valueOf(current), paddingLeft, y, paint);
+        //绘制 +1 的数字
+        canvas.drawText(String.valueOf(current + 1), paddingLeft, y - fontSpacing, paint);
+        //绘制 -1 的数字
+        canvas.drawText(String.valueOf(current - 1), paddingLeft, y + fontSpacing, paint);
     }
 
     @Override
@@ -118,15 +143,16 @@ public class ZanCountViewV4 extends BaseMeasureView {
             mPaintHelper.update(v);
             invalidate();
         } else if (isUp) {
-            //手指抬起之后,fling
-            //Log.i(TAG, "computeScroll:" + "up fling finish, final:" + mScroller.getFinalY() + " end:" + mPaintHelper.mScrollDistance);
 
             isUp = false;
         }
     }
 
-    float lastX;
+    /**
+     * 记录上一次触摸坐标位置
+     */
     float lastY;
+    //float lastX;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -135,27 +161,30 @@ public class ZanCountViewV4 extends BaseMeasureView {
             mTracker = VelocityTracker.obtain();
         }
 
-        mTracker.addMovement(event);
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
-                if (!mScroller.isFinished()) { //fling
+                //lastX = event.getX();
+                lastY = event.getY();
+
+                //滑动时再次按下停止滑动
+                if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
                 }
+                //重新
                 mTracker.clear();
-
-                lastX = event.getX();
-                lastY = event.getY();
+                mTracker.addMovement(event);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
+                //float x = event.getX();
+                //float disX = x - lastX;
+                //lastX = x;
                 float y = event.getY();
-                float disX = x - lastX;
                 float disY = y - lastY;
-                lastX = x;
                 lastY = y;
+
+                mTracker.addMovement(event);
 
                 mPaintHelper.update(disY);
                 invalidate();
@@ -163,22 +192,22 @@ public class ZanCountViewV4 extends BaseMeasureView {
                 break;
 
             case MotionEvent.ACTION_UP:
-
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_OUTSIDE:
+                //float xVelocity = mTracker.getXVelocity();
+                //lastX = event.getX();
                 //计算加速度
+                mTracker.addMovement(event);
                 mTracker.computeCurrentVelocity(512);
-                float xVelocity = mTracker.getXVelocity();
                 float yVelocity = mTracker.getYVelocity();
-
-                lastX = event.getX();
                 lastY = event.getY();
 
-                if (yVelocity > mMinimumFlingVelocity) {
-
+                if (Math.abs(yVelocity) > mMinimumFlingVelocity) {
                     //开始fling
                     mScroller.fling(
-                            (int) lastX,
+                            0,
                             (int) lastY,
-                            (int) xVelocity,
+                            0,
                             (int) yVelocity,
                             0,
                             0,
@@ -186,18 +215,14 @@ public class ZanCountViewV4 extends BaseMeasureView {
                             (int) mPaintHelper.totalDistance
                     );
 
-                    //Log.i(TAG, "onTouchEvent:startY: " + lastY);
-                    //Log.i(TAG, "onTouchEvent:" + "up fling, final:" + mScroller.getFinalY() + " start:" + mPaintHelper.mScrollDistance);
-
                     //修正 fling 最终位置,使其最终停在一个没有偏移的位置上
                     mPaintHelper.setFinalFlingY(mScroller, lastY);
-                    invalidate();
                 } else {
+                    //速度不够,开始回滚
                     mPaintHelper.scroll(mScroller, (int) lastY);
-                    invalidate();
                 }
                 isUp = true;
-
+                invalidate();
                 break;
 
             default:
@@ -210,48 +235,82 @@ public class ZanCountViewV4 extends BaseMeasureView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        //回收
         if (mTracker != null) {
             mTracker.recycle();
         }
     }
 
     //============================内部类============================
+
+    /**
+     * 用于帮助 {@link ZanCountViewV4#onDraw(Canvas)} 获取绘制的文本,文本y方向偏移量
+     */
     class PaintHelper {
 
+        /**
+         * 最小数字
+         */
         int   start;
+        /**
+         * 最大数字
+         */
         int   end;
+        /**
+         * 最大滑动距离
+         */
         float totalDistance;
+        /**
+         * 行间距
+         */
         float fontSpacing;
+        /**
+         * 已经滑动距离
+         */
         float mScrollDistance;
 
-        PaintHelper(int start, int end, float fontSpacing) {
+        PaintHelper(int start, int end, float fontSpacing, int current) {
             this.start = start;
             this.end = end;
             this.fontSpacing = fontSpacing;
             totalDistance = (end - start) * fontSpacing;
+            mScrollDistance = (current - start) * fontSpacing;
         }
 
-
+        /**
+         * @param fontSpacing 设置并更新总滑动距离
+         */
         void setFontSpacing(float fontSpacing) {
             resetTotal(start, end, fontSpacing);
             this.fontSpacing = fontSpacing;
         }
 
+        /**
+         * @param start 设置并更新总滑动距离
+         */
         void setStart(int start) {
             this.start = start;
             resetTotal(start, end, fontSpacing);
         }
 
+        /**
+         * @param end 设置并更新总滑动距离
+         */
         void setEnd(int end) {
             this.end = end;
             resetTotal(start, end, fontSpacing);
         }
 
+        /**
+         * 更新总滑动距离
+         */
         private void resetTotal(int start, int end, float fontSpacing) {
             totalDistance = fontSpacing * (end - start);
         }
 
-
+        /**
+         * @param distance 当滑动一小段距离时,使用该方法通知 {@link PaintHelper}
+         */
         void update(float distance) {
 
             mScrollDistance += distance;
@@ -273,21 +332,24 @@ public class ZanCountViewV4 extends BaseMeasureView {
 
             if (distance > 0) {
                 //向下滑动
-                mText = i;
+                mCurrentInt = i;
                 mY = mYDefault + extraMove;
             } else {
                 //向上滑动
-                mText = i + 1;
+                mCurrentInt = i + 1;
                 mY = mYDefault - (fontSpacing - extraMove);
             }
-
-            //            Log.i(TAG, "update:mText " + i + " extra:" + String.format(Locale.CHINA, "%.4f", extraMove));
         }
 
+        /**
+         * 在 up 后如果是 fling 需要跟新最终距离,使其最终停在一个数字没有偏移的位置上
+         *
+         * @param scroller fling
+         * @param startY   开始fling位置
+         */
         void setFinalFlingY(Scroller scroller, float startY) {
             int finalY = scroller.getFinalY();
 
-            //Log.i(TAG, "setFinalFlingY:" + finalY);
             float distance = finalY - startY;
             float finalScroll = (distance + mScrollDistance);
 
@@ -307,11 +369,16 @@ public class ZanCountViewV4 extends BaseMeasureView {
             }
         }
 
+        /**
+         * 当 up 后,如果没有fling操作,使用scroller 滚动
+         *
+         * @param scroller 滚动的 scroller
+         * @param startY   开始滚动位置
+         */
         void scroll(Scroller scroller, int startY) {
             float extra = mScrollDistance % fontSpacing;
             float base = fontSpacing / 2;
 
-            //Log.i(TAG, "scroll:" + extra);
             if (extra < base) {
                 scroller.startScroll(0, startY, 0, (int) -extra);
             } else {
