@@ -13,7 +13,7 @@ import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
 import com.example.common.BaseLineUtil;
-import com.example.common.BaseMeasureView;
+import com.example.common.BaseMeasureGravityView;
 import com.example.zanview.R;
 
 /**
@@ -22,7 +22,7 @@ import com.example.zanview.R;
  *
  * @author wuxio
  */
-public class ZanCountViewV4 extends BaseMeasureView {
+public class ZanCountViewV4 extends BaseMeasureGravityView {
 
     private static final String TAG = "TestCanvasIsNew";
     protected Paint mPaint;
@@ -80,8 +80,9 @@ public class ZanCountViewV4 extends BaseMeasureView {
     /**
      * 初始化变量,获取属性
      */
+    @Override
     protected void init(Context context, AttributeSet attrs) {
-
+        super.init(context, attrs);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV4);
         float size = typedArray.getDimension(R.styleable.ZanCountViewV4_size, 12);
@@ -95,7 +96,7 @@ public class ZanCountViewV4 extends BaseMeasureView {
         mPaintHelper = new PaintHelper(min, max, mFontSpacing, current);
         typedArray.recycle();
 
-        mYDefault = mY = getPaddingTop() + BaseLineUtil.getBaseLine(mPaint);
+        mYDefault = mY = BaseLineUtil.getBaseLine(mPaint);
         mScroller = new Scroller(context);
         ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
@@ -113,22 +114,23 @@ public class ZanCountViewV4 extends BaseMeasureView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int paddingTop = getPaddingTop();
-        int paddingLeft = getPaddingLeft();
 
         float fontSpacing = mFontSpacing;
         int current = mCurrentInt;
         float y = mY;
         Paint paint = mPaint;
 
+        int offsetLeft = mGravityLeft;
+        int offsetTop = mGravityTop;
+
         //裁剪出一行的空间
-        canvas.clipRect(0, paddingTop, getRight(), paddingTop + fontSpacing);
+        canvas.clipRect(0, offsetTop, getRight(), offsetTop + fontSpacing);
         //根据偏移量 mY ,绘制数字 mCurrentInt
-        canvas.drawText(String.valueOf(current), paddingLeft, y, paint);
+        canvas.drawText(String.valueOf(current), offsetLeft, offsetTop + y, paint);
         //绘制 +1 的数字
-        canvas.drawText(String.valueOf(current + 1), paddingLeft, y - fontSpacing, paint);
+        canvas.drawText(String.valueOf(current + 1), offsetLeft, offsetTop + y - fontSpacing, paint);
         //绘制 -1 的数字
-        canvas.drawText(String.valueOf(current - 1), paddingLeft, y + fontSpacing, paint);
+        canvas.drawText(String.valueOf(current - 1), offsetLeft, offsetTop + y + fontSpacing, paint);
     }
 
     @Override
