@@ -5,14 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
+import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
 import com.example.common.BaseMeasureView;
-
-import java.util.Locale;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -23,15 +21,45 @@ import java.util.Locale;
 public class ZanCountViewV4 extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
-    protected Paint           mPaint;
-    private   Scroller        mScroller;
-    private   VelocityTracker mTracker;
+    protected Paint mPaint;
 
-    private float       mScrollDistance;
+    /**
+     * 用于抬起时惯性滑动和位置微调
+     */
+    private Scroller        mScroller;
+    private VelocityTracker mTracker;
+    /**
+     * 最小fling速度
+     */
+    private int             mMinimumFlingVelocity;
+    private int             mTouchSlop;
+
+    /**
+     * onDraw 中从该类获取绘制的文本,和y坐标偏移
+     */
     private PaintHelper mPaintHelper;
+    /**
+     * 将要绘制的数字
+     */
+    private int         mText;
+    /**
+     * 绘制文字的y方向坐标
+     */
+    private float       mY;
 
-    private int   mText;
-    private float mY;
+    /**
+     * 初始时坐标,用于还原y值
+     */
+    private float mYDefault;
+    /**
+     * 行间距
+     */
+    private float mFontSpacing;
+
+    /**
+     * 一个标记用于记录是否已经抬起手指,true,手指已经抬起
+     */
+    private boolean isUp;
 
     public ZanCountViewV4(Context context) {
         this(context, null, 0);
@@ -49,11 +77,14 @@ public class ZanCountViewV4 extends BaseMeasureView {
     protected void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setTextSize(150);
-        float fontSpacing = mPaint.getFontSpacing();
-        mPaintHelper = new PaintHelper(0, 500, fontSpacing);
-        mY = getPaddingTop() + fontSpacing;
+        mFontSpacing = mPaint.getFontSpacing();
+        mPaintHelper = new PaintHelper(0, 10, mFontSpacing);
+        mYDefault = mY = getPaddingTop() + mFontSpacing;
 
         mScroller = new Scroller(context);
+        ViewConfiguration configuration = ViewConfiguration.get(getContext());
+        mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
+        mTouchSlop = configuration.getScaledTouchSlop();
     }
 
     @Override
@@ -68,8 +99,11 @@ public class ZanCountViewV4 extends BaseMeasureView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        canvas.clipRect(0, getPaddingTop(), getRight(), mYDefault);
         canvas.drawText(String.valueOf(mText), 50, mY, mPaint);
+        canvas.drawText(String.valueOf(mText + 1), 50, mY - mFontSpacing, mPaint);
+        canvas.drawText(String.valueOf(mText - 1), 50, mY + mFontSpacing, mPaint);
+        //mY = mYDefault;
     }
 
     @Override
@@ -77,18 +111,18 @@ public class ZanCountViewV4 extends BaseMeasureView {
         super.computeScroll();
 
         if (mScroller.computeScrollOffset()) {
-            Log.i(TAG, "computeScroll:" + "fling after");
+            //处理 fling 逻辑
             int y = mScroller.getCurrY();
             float v = y - lastY;
             lastY = y;
-            float v1 = mScrollDistance += v;
-            mPaintHelper.update(mScrollDistance);
-
+            mPaintHelper.update(v);
             invalidate();
-        }
+        } else if (isUp) {
+            //手指抬起之后,fling
+            //Log.i(TAG, "computeScroll:" + "up fling finish, final:" + mScroller.getFinalY() + " end:" + mPaintHelper.mScrollDistance);
 
-        String format = String.format(Locale.CHINA, "%.4f", mScrollDistance);
-        Log.i(TAG, "computeScroll:" + format);
+            isUp = false;
+        }
     }
 
     float lastX;
@@ -120,35 +154,52 @@ public class ZanCountViewV4 extends BaseMeasureView {
                 float y = event.getY();
                 float disX = x - lastX;
                 float disY = y - lastY;
-
                 lastX = x;
                 lastY = y;
 
-                float v = mScrollDistance += disY;
-                mPaintHelper.update(mScrollDistance);
+                mPaintHelper.update(disY);
                 invalidate();
+
                 break;
+
             case MotionEvent.ACTION_UP:
-                mTracker.computeCurrentVelocity(1000);
+
+                //计算加速度
+                mTracker.computeCurrentVelocity(512);
                 float xVelocity = mTracker.getXVelocity();
                 float yVelocity = mTracker.getYVelocity();
 
                 lastX = event.getX();
                 lastY = event.getY();
 
-                Log.i(TAG, "onTouchEvent:" + "fling");
-                mScroller.fling(
-                        (int) lastX,
-                        (int) lastY,
-                        (int) xVelocity,
-                        (int) yVelocity,
-                        0,
-                        5000,
-                        0,
-                        5000
-                );
-                invalidate();
+                if (yVelocity > mMinimumFlingVelocity) {
+
+                    //开始fling
+                    mScroller.fling(
+                            (int) lastX,
+                            (int) lastY,
+                            (int) xVelocity,
+                            (int) yVelocity,
+                            0,
+                            0,
+                            0,
+                            (int) mPaintHelper.totalDistance
+                    );
+
+                    //Log.i(TAG, "onTouchEvent:startY: " + lastY);
+                    //Log.i(TAG, "onTouchEvent:" + "up fling, final:" + mScroller.getFinalY() + " start:" + mPaintHelper.mScrollDistance);
+
+                    //修正 fling 最终位置,使其最终停在一个没有偏移的位置上
+                    mPaintHelper.setFinalFlingY(mScroller, lastY);
+                    invalidate();
+                } else {
+                    mPaintHelper.scroll(mScroller, (int) lastY);
+                    invalidate();
+                }
+                isUp = true;
+
                 break;
+
             default:
                 break;
         }
@@ -171,25 +222,27 @@ public class ZanCountViewV4 extends BaseMeasureView {
         int   end;
         float totalDistance;
         float fontSpacing;
+        float mScrollDistance;
 
-        public PaintHelper(int start, int end, float fontSpacing) {
+        PaintHelper(int start, int end, float fontSpacing) {
             this.start = start;
             this.end = end;
             this.fontSpacing = fontSpacing;
             totalDistance = (end - start) * fontSpacing;
         }
 
-        public void setFontSpacing(float fontSpacing) {
+
+        void setFontSpacing(float fontSpacing) {
             resetTotal(start, end, fontSpacing);
             this.fontSpacing = fontSpacing;
         }
 
-        public void setStart(int start) {
+        void setStart(int start) {
             this.start = start;
             resetTotal(start, end, fontSpacing);
         }
 
-        public void setEnd(int end) {
+        void setEnd(int end) {
             this.end = end;
             resetTotal(start, end, fontSpacing);
         }
@@ -198,10 +251,72 @@ public class ZanCountViewV4 extends BaseMeasureView {
             totalDistance = fontSpacing * (end - start);
         }
 
-        public void update(float distance) {
-            float v = distance * 2 / totalDistance;
-            float v1 = start + end * v;
-            mText = (int) v1;
+
+        void update(float distance) {
+
+            mScrollDistance += distance;
+
+            if (mScrollDistance < 0) {
+                mScrollDistance = 0;
+            } else if (mScrollDistance > totalDistance) {
+                mScrollDistance = totalDistance;
+            }
+
+            //滑动总进度
+            float fraction = mScrollDistance / totalDistance;
+            //根据进度计算数字
+            float scrollFloat = start + (end - start) * fraction;
+            //强转为int,舍弃小数位
+            int i = (int) scrollFloat;
+            //小数位决定位移
+            float extraMove = (scrollFloat - i) * fontSpacing;
+
+            if (distance > 0) {
+                //向下滑动
+                mText = i;
+                mY = mYDefault + extraMove;
+            } else {
+                //向上滑动
+                mText = i + 1;
+                mY = mYDefault - (fontSpacing - extraMove);
+            }
+
+            //            Log.i(TAG, "update:mText " + i + " extra:" + String.format(Locale.CHINA, "%.4f", extraMove));
+        }
+
+        void setFinalFlingY(Scroller scroller, float startY) {
+            int finalY = scroller.getFinalY();
+
+            //Log.i(TAG, "setFinalFlingY:" + finalY);
+            float distance = finalY - startY;
+            float finalScroll = (distance + mScrollDistance);
+
+            //finalScroll是 fontSpacing 倍数
+            if (finalScroll < 0 || finalScroll > totalDistance) {
+                return;
+            }
+
+            //finalScroll不是 fontSpacing 倍数
+            // 1. 先计算余数
+            float extra = finalScroll % fontSpacing;
+            // 2. 将余数刨除
+            if (distance < 0) {
+                scroller.setFinalY((int) (finalY + (fontSpacing - extra)));
+            } else {
+                scroller.setFinalY((int) (finalY - extra));
+            }
+        }
+
+        void scroll(Scroller scroller, int startY) {
+            float extra = mScrollDistance % fontSpacing;
+            float base = fontSpacing / 2;
+
+            //Log.i(TAG, "scroll:" + extra);
+            if (extra < base) {
+                scroller.startScroll(0, startY, 0, (int) -extra);
+            } else {
+                scroller.startScroll(0, startY, 0, (int) (fontSpacing - extra));
+            }
         }
     }
 }

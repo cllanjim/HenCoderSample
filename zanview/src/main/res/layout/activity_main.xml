@@ -8,7 +8,7 @@
         android:orientation="vertical"
         tools:context="com.example.zanview.MainActivity">
 
-    <com.example.zanview.view.ZanCountViewV3
+    <com.example.zanview.view.ZanCountViewV4
             android:layout_margin="16dp"
             android:background="@color/lightcyan"
             android:layout_width="match_parent"
