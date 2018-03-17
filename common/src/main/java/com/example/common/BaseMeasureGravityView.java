@@ -2,6 +2,7 @@ package com.example.common;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -41,6 +42,7 @@ public abstract class BaseMeasureGravityView extends View {
         init(context, attrs);
     }
 
+    @CallSuper
     protected void init(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
         if (a.hasValue(0)) {
@@ -73,7 +75,11 @@ public abstract class BaseMeasureGravityView extends View {
             width = widthMostSize;
         } else if (widthMode == MeasureSpec.AT_MOST) {
             final int atMostWidth = getAtMostWidth();
-            width = atMostWidth > widthMostSize ? widthMostSize : atMostWidth;
+            if (atMostWidth < 0) {
+                width = widthMostSize;
+            } else {
+                width = atMostWidth > widthMostSize ? widthMostSize : atMostWidth;
+            }
         } else if (widthMode == MeasureSpec.UNSPECIFIED) {
             width = getAtMostWidth();
         }
@@ -83,7 +89,11 @@ public abstract class BaseMeasureGravityView extends View {
             height = heightMostSize;
         } else if (heightMode == MeasureSpec.AT_MOST) {
             final int atMostHeight = getAtMostHeight();
-            height = atMostHeight > heightMostSize ? heightMostSize : atMostHeight;
+            if (atMostHeight < 0) {
+                height = heightMostSize;
+            } else {
+                height = atMostHeight > heightMostSize ? heightMostSize : atMostHeight;
+            }
         } else if (heightMode == MeasureSpec.UNSPECIFIED) {
             height = getAtMostHeight();
         }
@@ -95,16 +105,18 @@ public abstract class BaseMeasureGravityView extends View {
     }
 
     /**
-     * 此方法会在 {@link #onMeasure(int, int)}中回调,决定宽度值
+     * 此方法会在 {@link #onMeasure(int, int)}中回调,决定当宽度是 wrap_content时,宽度值,
+     * 不必考虑padding,只需要返回自己需要使用的大小,
      *
-     * @return 宽度是wrap_content 模式时宽度值
+     * @return 宽度是wrap_content 模式时宽度值,或者 -1 表示使用父布局传给自己的尺寸
      */
     protected abstract int getAtMostWidth();
 
     /**
-     * 此方法会在 {@link #onMeasure(int, int)}中回调,决定高度值
+     * 此方法会在 {@link #onMeasure(int, int)}中回调,决定当高度是 wrap_content时,高度值,
+     * 不必考虑padding,只需要返回自己需要使用的大小,
      *
-     * @return 高度是wrap_content 模式时高度值
+     * @return 高度是wrap_content 模式时高度值,或者 -1 表示使用父布局传给自己的尺寸
      */
     protected abstract int getAtMostHeight();
 

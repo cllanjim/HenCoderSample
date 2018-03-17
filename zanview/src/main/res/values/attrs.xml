@@ -33,7 +33,7 @@
         <attr name="scroll_duration" format="integer"/>
     </declare-styleable>
 
-    <declare-styleable name="ZanCountViewV4">
+    <declare-styleable name="BaseTouchView">
         <attr name="min" format="integer"/>
         <attr name="max" format="integer"/>
         <attr name="start" format="integer"/>
