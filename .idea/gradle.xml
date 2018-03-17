@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/scrolltouch" />
+            <option value="$PROJECT_DIR$/tapeline" />
             <option value="$PROJECT_DIR$/zanview" />
           </set>
         </option>

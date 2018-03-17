@@ -120,6 +120,7 @@ public class ZanCountViewV4 extends BaseMeasureGravityView {
         float y = mY;
         Paint paint = mPaint;
 
+        //这两个偏移是gravity支持
         int offsetLeft = mGravityLeft;
         int offsetTop = mGravityTop;
 
