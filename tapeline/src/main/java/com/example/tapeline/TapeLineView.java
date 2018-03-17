@@ -2,6 +2,7 @@ package com.example.tapeline;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -10,7 +11,10 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
+import com.example.common.BaseLineUtil;
 import com.example.common.BaseMeasureView;
+
+import java.util.Locale;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -18,10 +22,13 @@ import com.example.common.BaseMeasureView;
  *
  * @author wuxio
  */
-public class ZanCountViewV4 extends BaseMeasureView {
+public class TapeLineView extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
-    protected Paint mPaint;
+    protected Paint mPaintLine;
+    protected Paint mPaintLineLong;
+    protected Paint mPaintText;
+    protected Paint mPaintNum;
 
     /**
      * 用于抬起时惯性滑动和位置微调
@@ -38,23 +45,29 @@ public class ZanCountViewV4 extends BaseMeasureView {
      */
     private PaintHelper mPaintHelper;
 
-
     /**
      * 一个标记用于记录是否已经抬起手指,true,手指已经抬起
      */
     private boolean isUp;
-    private int     mBaseSpace;
-    private int     mLineTop;
 
-    public ZanCountViewV4(Context context) {
+    private int mBaseSpace;
+    private int mLineTop;
+    private int mWidth;
+    private int mHeight;
+
+    private int   mCurrentNum;
+    private float mStartOffset;
+    private float mBaseLineNum;
+
+    public TapeLineView(Context context) {
         this(context, null, 0);
     }
 
-    public ZanCountViewV4(Context context, @Nullable AttributeSet attrs) {
+    public TapeLineView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ZanCountViewV4(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TapeLineView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
@@ -63,7 +76,33 @@ public class ZanCountViewV4 extends BaseMeasureView {
      * 初始化变量,获取属性
      */
     protected void init(Context context, AttributeSet attrs) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        int lineColor = Color.parseColor("#d9dcd9");
+
+        mPaintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintLine.setStyle(Paint.Style.STROKE);
+        mPaintLine.setStrokeWidth(2);
+        mPaintLine.setColor(lineColor);
+
+        mPaintLineLong = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintLineLong.setStyle(Paint.Style.STROKE);
+        mPaintLineLong.setStrokeWidth(4);
+        mPaintLineLong.setColor(lineColor);
+
+        mPaintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintText.setStrokeWidth(6);
+        mPaintText.setTextSize(80);
+        int textColor = Color.parseColor("#5c8e75");
+        mPaintText.setStrokeCap(Paint.Cap.ROUND);
+        mPaintText.setColor(textColor);
+        mPaintText.setTextAlign(Paint.Align.CENTER);
+
+        mPaintNum = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintNum.setTextSize(50);
+        mPaintNum.setColor(Color.BLACK);
+        mPaintNum.setTextAlign(Paint.Align.CENTER);
+        mBaseLineNum = BaseLineUtil.getBaseLine(mPaintNum);
+
         mMinimumFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         mScroller = new Scroller(context);
     }
@@ -82,25 +121,81 @@ public class ZanCountViewV4 extends BaseMeasureView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        mBaseSpace = 50;
+        mBaseSpace = 25;
         mLineTop = h / 2;
+
+        mCurrentNum = 480;
+        mPaintHelper = new PaintHelper(0, 500, mBaseSpace, mCurrentNum);
+
+        mWidth = getWidth();
+        mHeight = getHeight();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
 
-        final int lineHeight = 300;
-        final int width = getWidth();
+        final int lineHeight = 40;
+        final int lineHeightLong = 80;
         final int space = mBaseSpace;
         final float startY = mLineTop;
-        final float startOffSet = 24;
+        final float textY = mLineTop - 100;
+        final float stopY = startY + lineHeight;
+        final float stopYLong = startY + lineHeightLong;
+        final float baseLimeNum = mBaseLineNum;
 
-        float lineX = startOffSet;
+        //绘制背景色
+        canvas.save();
+        canvas.clipRect(0, startY, getWidth(), startY + 160);
+        canvas.drawColor(Color.parseColor("#f5f8f5"));
+        canvas.restore();
 
-        while (lineX < width) {
-            lineX += space;
-            canvas.drawLine(lineX, startY, lineX, startY + lineHeight, mPaint);
+        //计算游标位置
+        final int width = mWidth;
+        final int cursorX = mWidth >> 1;
+
+        //绘制当前刻度
+        int current = mCurrentNum;
+        float lineX = cursorX + mStartOffset;
+        if (current % 10 == 0) {
+            canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
+            canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
+        } else {
+            canvas.drawLine(lineX, startY, lineX, stopY, mPaintLine);
         }
+        lineX += space;
+
+        //绘制右边的刻度
+        while (lineX < width) {
+            current += 1;
+            if (current % 10 == 0) {
+                canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
+                canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
+            } else {
+                canvas.drawLine(lineX, startY, lineX, stopY, mPaintLine);
+            }
+            lineX += space;
+        }
+
+        //绘制左边的刻度
+        lineX = cursorX - (space - mStartOffset);
+        current = mCurrentNum;
+        while (lineX > 0) {
+            current -= 1;
+            if (current % 10 == 0) {
+                canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
+                canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
+            } else {
+                canvas.drawLine(lineX, startY, lineX, stopY, mPaintLine);
+            }
+            lineX -= space;
+        }
+
+        //绘制游标
+        canvas.drawLine(cursorX, startY, cursorX, stopYLong, mPaintText);
+
+        //绘制标题
+        String s = String.format(Locale.CHINA, "%.1f kg", mCurrentNum * 1f / 10);
+        canvas.drawText(s, cursorX, textY, mPaintText);
     }
 
     @Override
@@ -110,7 +205,7 @@ public class ZanCountViewV4 extends BaseMeasureView {
         if (mScroller.computeScrollOffset()) {
             //处理 fling 逻辑
             int x = mScroller.getCurrX();
-            float v = x - lastX;
+            float v = lastX - x;
             lastX = x;
             mPaintHelper.update(v);
             invalidate();
@@ -123,7 +218,6 @@ public class ZanCountViewV4 extends BaseMeasureView {
     /**
      * 记录上一次触摸坐标位置
      */
-    //float lastY;
     float lastX;
 
     @Override
@@ -149,15 +243,12 @@ public class ZanCountViewV4 extends BaseMeasureView {
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                mTracker.addMovement(event);
+
                 float x = event.getX();
-                float disX = x - lastX;
+                float disX = lastX - x;
                 lastX = x;
 
-                //float y = event.getY();
-                //float disY = y - lastY;
-                //lastY = y;
-
-                mTracker.addMovement(event);
                 mPaintHelper.update(disX);
                 invalidate();
                 break;
@@ -165,8 +256,6 @@ public class ZanCountViewV4 extends BaseMeasureView {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_OUTSIDE:
-                //float yVelocity = mTracker.getYVelocity();
-                //lastY = event.getY();
 
                 //计算加速度
                 mTracker.addMovement(event);
@@ -190,7 +279,7 @@ public class ZanCountViewV4 extends BaseMeasureView {
                     //修正 fling 最终位置,使其最终停在一个没有偏移的位置上
                     mPaintHelper.setFinalFlingX(mScroller, lastX);
                 } else {
-                    //速度不够,开始回滚
+                    //速度不够不 fling
                     mPaintHelper.scroll(mScroller, (int) lastX);
                 }
                 isUp = true;
@@ -216,7 +305,7 @@ public class ZanCountViewV4 extends BaseMeasureView {
     //============================内部类============================
 
     /**
-     * 用于帮助 {@link ZanCountViewV4#onDraw(Canvas)} 获取绘制的文本,文本y方向偏移量
+     * 用于帮助 {@link TapeLineView#onDraw(Canvas)} 获取绘制的文本,文本y方向偏移量
      */
     class PaintHelper {
 
@@ -293,50 +382,53 @@ public class ZanCountViewV4 extends BaseMeasureView {
                 mScrollDistance = totalDistance;
             }
 
+            float v = mScrollDistance / baseSpacing;
+            int i = (int) v;
+            mCurrentNum = i;
+            mStartOffset = (i - v) * baseSpacing;
         }
 
         /**
          * 在 up 后如果是 fling 需要跟新最终距离,使其最终停在一个数字没有偏移的位置上
          *
          * @param scroller fling
-         * @param startY   开始fling位置
+         * @param startX   开始fling位置
          */
-        void setFinalFlingX(Scroller scroller, float startY) {
-            int finalY = scroller.getFinalY();
+        void setFinalFlingX(Scroller scroller, float startX) {
+            int finalX = scroller.getFinalX();
 
-            float distance = finalY - startY;
-            float finalScroll = (distance + mScrollDistance);
+            float distance = startX - finalX + mScrollDistance;
 
-            //finalScroll是 baseSpacing 倍数
-            if (finalScroll < 0 || finalScroll > totalDistance) {
-                return;
-            }
-
-            //finalScroll不是 baseSpacing 倍数
-            // 1. 先计算余数
-            float extra = finalScroll % baseSpacing;
-            // 2. 将余数刨除
             if (distance < 0) {
-                scroller.setFinalY((int) (finalY + (baseSpacing - extra)));
-            } else {
-                scroller.setFinalY((int) (finalY - extra));
+                distance = 0;
+            } else if (distance > totalDistance) {
+                distance = totalDistance;
             }
+
+            float v = distance / baseSpacing;
+            int i = (int) v;
+            float v1 = (i - v) * baseSpacing;
+
+            scroller.setFinalX((int) (finalX - v1));
         }
 
         /**
          * 当 up 后,如果没有fling操作,使用scroller 滚动
          *
          * @param scroller 滚动的 scroller
-         * @param startY   开始滚动位置
+         * @param startX   开始滚动位置
          */
-        void scroll(Scroller scroller, int startY) {
-            float extra = mScrollDistance % baseSpacing;
+        void scroll(Scroller scroller, int startX) {
+
+            float v = mScrollDistance / baseSpacing;
+            int i = (int) v;
+            float v1 = -(i - v) * baseSpacing;
             float base = baseSpacing / 2;
 
-            if (extra < base) {
-                scroller.startScroll(0, startY, 0, (int) -extra);
+            if (v1 < base) {
+                scroller.startScroll(startX, 0, (int) v1, 0);
             } else {
-                scroller.startScroll(0, startY, 0, (int) (baseSpacing - extra));
+                scroller.startScroll(startX, 0, (int) (v1 - baseSpacing), 0);
             }
         }
     }

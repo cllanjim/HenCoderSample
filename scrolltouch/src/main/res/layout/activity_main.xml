@@ -8,12 +8,11 @@
         android:orientation="vertical"
         tools:context="com.example.scrolltouch.MainActivity">
 
-    <com.example.scrolltouch.views.TestCanvasIsNew
+    <com.example.tapeline.TapeLineView
             android:id="@+id/testCanvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="16dp"
-            android:background="@color/colorPrimaryDark"
             android:onClick="click00"
             />
 
