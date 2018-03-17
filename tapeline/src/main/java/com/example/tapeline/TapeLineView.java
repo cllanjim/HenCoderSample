@@ -25,13 +25,29 @@ import java.util.Locale;
 public class TapeLineView extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
+
+    /**
+     * 绘制短刻度
+     */
     protected Paint mPaintLine;
+
+    /**
+     * 绘制长刻度
+     */
     protected Paint mPaintLineLong;
-    protected Paint mPaintText;
+
+    /**
+     * 绘制刻度数字
+     */
     protected Paint mPaintNum;
 
     /**
-     * 用于抬起时惯性滑动和位置微调
+     * 绘制文本
+     */
+    protected Paint mPaintText;
+
+    /**
+     * 用于 fling 和 滑动
      */
     private Scroller        mScroller;
     private VelocityTracker mTracker;
@@ -41,7 +57,7 @@ public class TapeLineView extends BaseMeasureView {
     private int             mMinimumFlingVelocity;
 
     /**
-     * onDraw 中从该类获取绘制的文本,和y坐标偏移
+     * onDraw 中从该类获取绘制的文本
      */
     private PaintHelper mPaintHelper;
 
@@ -50,13 +66,34 @@ public class TapeLineView extends BaseMeasureView {
      */
     private boolean isUp;
 
+    /**
+     * 刻度间距
+     */
     private int mBaseSpace;
-    private int mLineTop;
-    private int mWidth;
-    private int mHeight;
 
-    private int   mCurrentNum;
+    /**
+     * 刻度尺起始y坐标
+     */
+    private int mLineTop;
+
+    /**
+     * view 的宽度值
+     */
+    private int mWidth;
+
+    /**
+     * 当前选择的数字
+     */
+    private int mCurrentNum;
+
+    /**
+     * 辅助绘制,一个偏移量
+     */
     private float mStartOffset;
+
+    /**
+     * 刻度数字的baseline
+     */
     private float mBaseLineNum;
 
     public TapeLineView(Context context) {
@@ -77,18 +114,27 @@ public class TapeLineView extends BaseMeasureView {
      */
     protected void init(Context context, AttributeSet attrs) {
 
+        //初始化 画笔 : 刻度
         int lineColor = Color.parseColor("#d9dcd9");
-
         mPaintLine = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintLine.setStyle(Paint.Style.STROKE);
         mPaintLine.setStrokeWidth(2);
         mPaintLine.setColor(lineColor);
 
+        //初始化 画笔 : 长刻度
         mPaintLineLong = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintLineLong.setStyle(Paint.Style.STROKE);
         mPaintLineLong.setStrokeWidth(4);
         mPaintLineLong.setColor(lineColor);
 
+        //初始化 画笔 : 刻度数字
+        mPaintNum = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintNum.setTextSize(50);
+        mPaintNum.setColor(Color.BLACK);
+        mPaintNum.setTextAlign(Paint.Align.CENTER);
+        mBaseLineNum = BaseLineUtil.getBaseLine(mPaintNum);
+
+        //初始化 画笔 : 中心游标, 大数字
         mPaintText = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaintText.setStrokeWidth(6);
         mPaintText.setTextSize(80);
@@ -97,23 +143,19 @@ public class TapeLineView extends BaseMeasureView {
         mPaintText.setColor(textColor);
         mPaintText.setTextAlign(Paint.Align.CENTER);
 
-        mPaintNum = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaintNum.setTextSize(50);
-        mPaintNum.setColor(Color.BLACK);
-        mPaintNum.setTextAlign(Paint.Align.CENTER);
-        mBaseLineNum = BaseLineUtil.getBaseLine(mPaintNum);
-
         mMinimumFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         mScroller = new Scroller(context);
     }
 
     @Override
     protected int getAtMostWidth() {
+        // 始终match_parent
         return -1;
     }
 
     @Override
     protected int getAtMostHeight() {
+        // 始终match_parent
         return -1;
     }
 
@@ -121,14 +163,15 @@ public class TapeLineView extends BaseMeasureView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
+        //刻度间距
         mBaseSpace = 25;
+        //刻度起始y点
         mLineTop = h / 2;
-
+        //起始数字
         mCurrentNum = 480;
+        //初始化 绘制辅助类
         mPaintHelper = new PaintHelper(0, 5000, mBaseSpace, mCurrentNum);
-
         mWidth = getWidth();
-        mHeight = getHeight();
     }
 
     @Override
@@ -169,15 +212,19 @@ public class TapeLineView extends BaseMeasureView {
         //绘制右边的刻度
         while (lineX < width) {
             current += 1;
+            //不绘制超出边界部分
             if (current > max) {
                 break;
             }
+            //绘制刻度数字,和长刻度
             if (current % 10 == 0) {
                 canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
                 canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
             } else {
+                //绘制短刻度
                 canvas.drawLine(lineX, startY, lineX, stopY, mPaintLine);
             }
+            //每次增加一个刻度间距
             lineX += space;
         }
 
@@ -209,24 +256,22 @@ public class TapeLineView extends BaseMeasureView {
     @Override
     public void computeScroll() {
         super.computeScroll();
-
+        //处理 fling 和 scroll
         if (mScroller.computeScrollOffset()) {
-            //处理 fling 逻辑
             int x = mScroller.getCurrX();
             float v = lastX - x;
             lastX = x;
             mPaintHelper.update(v);
             invalidate();
         } else if (isUp) {
-
             isUp = false;
         }
     }
 
     /**
-     * 记录上一次触摸坐标位置
+     * 记录上一次触摸坐标位置,辅助计算
      */
-    float lastX;
+    private float lastX;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -239,24 +284,22 @@ public class TapeLineView extends BaseMeasureView {
             case MotionEvent.ACTION_DOWN:
 
                 lastX = event.getX();
-                //lastY = event.getY();
 
                 //滑动时再次按下停止滑动
                 if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
                 }
-                //重新
+                //重新追踪速度
                 mTracker.clear();
                 mTracker.addMovement(event);
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 mTracker.addMovement(event);
-
+                //计算滑动距离,并通知 mPaintHelper
                 float x = event.getX();
                 float disX = lastX - x;
                 lastX = x;
-
                 mPaintHelper.update(disX);
                 invalidate();
                 break;
@@ -287,7 +330,7 @@ public class TapeLineView extends BaseMeasureView {
                     //修正 fling 最终位置,使其最终停在一个没有偏移的位置上
                     mPaintHelper.setFinalFlingX(mScroller, lastX);
                 } else {
-                    //速度不够不 fling
+                    //速度不够 fling
                     mPaintHelper.scroll(mScroller, (int) lastX);
                 }
                 isUp = true;
@@ -297,7 +340,6 @@ public class TapeLineView extends BaseMeasureView {
             default:
                 break;
         }
-
         return true;
     }
 
@@ -313,7 +355,7 @@ public class TapeLineView extends BaseMeasureView {
     //============================内部类============================
 
     /**
-     * 用于帮助 {@link TapeLineView#onDraw(Canvas)} 获取绘制的文本,文本y方向偏移量
+     * 用于帮助 {@link TapeLineView#onDraw(Canvas)} 获取绘制的文本
      */
     class PaintHelper {
 
