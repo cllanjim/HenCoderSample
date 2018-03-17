@@ -125,7 +125,7 @@ public class TapeLineView extends BaseMeasureView {
         mLineTop = h / 2;
 
         mCurrentNum = 480;
-        mPaintHelper = new PaintHelper(0, 500, mBaseSpace, mCurrentNum);
+        mPaintHelper = new PaintHelper(0, 5000, mBaseSpace, mCurrentNum);
 
         mWidth = getWidth();
         mHeight = getHeight();
@@ -134,6 +134,8 @@ public class TapeLineView extends BaseMeasureView {
     @Override
     protected void onDraw(Canvas canvas) {
 
+        final int min = mPaintHelper.start;
+        final int max = mPaintHelper.end;
         final int lineHeight = 40;
         final int lineHeightLong = 80;
         final int space = mBaseSpace;
@@ -167,6 +169,9 @@ public class TapeLineView extends BaseMeasureView {
         //绘制右边的刻度
         while (lineX < width) {
             current += 1;
+            if (current > max) {
+                break;
+            }
             if (current % 10 == 0) {
                 canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
                 canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
@@ -181,6 +186,9 @@ public class TapeLineView extends BaseMeasureView {
         current = mCurrentNum;
         while (lineX > 0) {
             current -= 1;
+            if (current < min) {
+                break;
+            }
             if (current % 10 == 0) {
                 canvas.drawLine(lineX, startY, lineX, stopYLong, mPaintLine);
                 canvas.drawText(String.valueOf(current / 10), lineX, stopYLong + baseLimeNum, mPaintNum);
