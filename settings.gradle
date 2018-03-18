@@ -1,1 +1,1 @@
-include ':app', ':zanview', ':scrolltouch', ':common'
+include ':app', ':zanview', ':common'
