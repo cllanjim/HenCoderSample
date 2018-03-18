@@ -13,14 +13,14 @@ import android.view.ViewGroup;
  *
  * @author wuxio
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
-    private static final String KEY_layoutId = "layoutId";
+    private static final String KEY_LAYOUT_ID = "layoutId";
 
     public static < T extends BaseFragment > T newInstance(@LayoutRes int layoutId, Supplier< T > supplier) {
         T t = supplier.get();
         Bundle bundle = new Bundle();
-        bundle.putInt(KEY_layoutId, layoutId);
+        bundle.putInt(KEY_LAYOUT_ID, layoutId);
         t.setArguments(bundle);
         return t;
     }
@@ -29,9 +29,8 @@ public class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle arguments = getArguments();
-        int anInt = arguments.getInt(KEY_layoutId);
-        View view = inflater.inflate(anInt, container, false);
-        return view;
+        int anInt = arguments.getInt(KEY_LAYOUT_ID);
+        return inflater.inflate(anInt, container, false);
     }
 
     @Override
