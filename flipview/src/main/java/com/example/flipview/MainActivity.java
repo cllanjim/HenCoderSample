@@ -13,6 +13,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void start(View view) {
-        ((FlipView) view).change();
+//        ((FlipView) view).change();
+        ((FlipViewSample) view).change();
     }
 }
