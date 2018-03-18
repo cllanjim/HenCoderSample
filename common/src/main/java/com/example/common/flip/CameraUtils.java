@@ -1,4 +1,4 @@
-package com.example.flipview;
+package com.example.common.flip;
 
 import android.content.Context;
 import android.graphics.Matrix;
