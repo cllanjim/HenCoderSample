@@ -1,4 +1,4 @@
-package com.example.tapeline;
+package com.example.common.tape;
 
 import android.content.Context;
 import android.graphics.Canvas;

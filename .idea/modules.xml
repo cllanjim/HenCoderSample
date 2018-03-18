@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/scrolltouch/scrolltouch.iml" filepath="$PROJECT_DIR$/scrolltouch/scrolltouch.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tapeline/tapeline.iml" filepath="$PROJECT_DIR$/tapeline/tapeline.iml" />
       <module fileurl="file://$PROJECT_DIR$/zanview/zanview.iml" filepath="$PROJECT_DIR$/zanview/zanview.iml" />
     </modules>
   </component>

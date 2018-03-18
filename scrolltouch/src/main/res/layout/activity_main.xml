@@ -8,7 +8,7 @@
         android:orientation="vertical"
         tools:context="com.example.scrolltouch.MainActivity">
 
-    <com.example.tapeline.TapeLineView
+    <com.example.common.tape.TapeLineView
             android:id="@+id/testCanvas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
