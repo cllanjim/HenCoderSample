@@ -1,6 +1,5 @@
 package com.example.flipview;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -28,6 +28,7 @@ public class FlipView extends View {
 
     protected Camera mCamera;
     protected float  mDegree;
+    protected float  mCameraDegree;
 
     public FlipView(Context context) {
         this(context, null, 0);
@@ -64,6 +65,51 @@ public class FlipView extends View {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                float x = event.getX();
+                float y = event.getY();
+                flipView(x, y);
+                break;
+
+            case MotionEvent.ACTION_UP:
+            default:
+                mDegree = 0;
+                mCameraDegree = 0;
+                invalidate();
+                break;
+        }
+
+        return true;
+    }
+
+    private void flipView(float x, float y) {
+        final int halfWidth = mWidth >> 1;
+        final int halfHeight = mHeight >> 1;
+
+        float tan1 = x - halfWidth;
+        float tan2 = y - halfHeight;
+
+        float degrees = (float) Math.toDegrees(Math.atan(tan2 / tan1));
+        mCameraDegree = 45;
+
+        if (tan1 > 0 && tan2 < 0) {
+            mDegree = -degrees;
+        } else if (tan1 < 0 && tan2 < 0) {
+            mDegree = -degrees + 180;
+        } else if (tan1 < 0 && tan2 > 0) {
+            mDegree = -degrees + 180;
+        } else if (tan1 > 0 && tan2 > 0) {
+            mDegree = -degrees + 360;
+        }
+        invalidate();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -96,27 +142,12 @@ public class FlipView extends View {
         canvas.clipRect(0, -halfHeight, halfWidth, halfHeight);
         //使用camera旋转
         camera.save();
-        camera.rotateY(-45);
+        camera.rotateY(-mCameraDegree);
         camera.applyToCanvas(canvas);
         camera.restore();
         //画布旋转回来,绘制bitmap
         canvas.rotate(degree);
         canvas.drawBitmap(bitmap, -bitmapWidth >> 1, -bitmapHeight >> 1, mPaint);
         canvas.restore();
-    }
-
-    public void change() {
-
-        ValueAnimator animator = ValueAnimator.ofInt(0, 12);
-        animator.setDuration(12 * 1000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = animation.getAnimatedFraction();
-                mDegree = 360 * fraction;
-                invalidate();
-            }
-        });
-        animator.start();
     }
 }
