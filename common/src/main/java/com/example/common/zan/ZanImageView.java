@@ -1,4 +1,4 @@
-package com.example.zanview.view;
+package com.example.common.zan;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -9,7 +9,7 @@ import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import com.example.zanview.R;
+import com.example.common.R;
 
 /**
  * Created by LiuJin on 2018-03-09:20:29

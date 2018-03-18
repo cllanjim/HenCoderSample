@@ -1,4 +1,4 @@
-package com.example.zanview.view;
+package com.example.common.zan;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.example.common.BaseMeasureView;
-import com.example.zanview.R;
+import com.example.common.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16

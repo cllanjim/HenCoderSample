@@ -1,4 +1,4 @@
-package com.example.zanview.view;
+package com.example.common.zan;
 
 import android.content.Context;
 import android.graphics.Canvas;

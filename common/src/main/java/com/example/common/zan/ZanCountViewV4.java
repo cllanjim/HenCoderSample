@@ -1,4 +1,4 @@
-package com.example.zanview.view;
+package com.example.common.zan;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,7 +14,7 @@ import android.widget.Scroller;
 
 import com.example.common.BaseLineUtil;
 import com.example.common.BaseMeasureGravityView;
-import com.example.zanview.R;
+import com.example.common.R;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16

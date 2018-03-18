@@ -1,1 +1,1 @@
-include ':app', ':zanview', ':common'
+include ':app', ':common'

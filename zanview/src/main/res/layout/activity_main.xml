@@ -8,17 +8,4 @@
         android:orientation="vertical"
         tools:context="com.example.zanview.MainActivity">
 
-    <com.example.zanview.view.ZanCountViewV4
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:background="@color/lightcyan"
-            app:max="12"
-            app:min="1"
-            app:start="2"
-            app:color="@color/gold"
-            app:size="24sp"
-            />
-
 </FrameLayout>
