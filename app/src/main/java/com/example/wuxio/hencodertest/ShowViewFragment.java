@@ -33,4 +33,13 @@ public class ShowViewFragment extends Fragment {
         View view = inflater.inflate(anInt, container, false);
         return view;
     }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        findViews(view);
+    }
+
+    protected void findViews(View view) {
+    }
 }

@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.common.R;
+
 /**
  * Created by LiuJin on 2018-03-09:18:19
  *

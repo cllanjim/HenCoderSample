@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by LiuJin on 2018-03-09:18:19
+ * 为 imageView 扩充设置颜色功能,使其可以为图标类image,直接修改颜色而不必引用资源,内部使用 tint
  *
  * @author wuxio
  */
@@ -46,7 +47,6 @@ public class TintImageView extends android.support.v7.widget.AppCompatImageView 
             Field field = superclass.getDeclaredField("mDrawable");
             field.setAccessible(true);
             field.set(this, mTintDrawable);
-            //Log.i(TAG, "init:" + "反射成功");
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

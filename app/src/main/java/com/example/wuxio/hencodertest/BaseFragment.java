@@ -1,27 +1,36 @@
 package com.example.wuxio.hencodertest;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by LiuJin on 2018-03-06:21:34
+ * Created by LiuJin on 2018-03-07:9:47
  *
  * @author wuxio
  */
-public abstract class BasePagerFragment extends Fragment {
+public class BaseFragment extends Fragment {
 
-    private ViewPager mViewPager;
+    private static final String KEY_layoutId = "layoutId";
+
+    public static < T extends BaseFragment > T newInstance(@LayoutRes int layoutId, Supplier< T > supplier) {
+        T t = supplier.get();
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_layoutId, layoutId);
+        t.setArguments(bundle);
+        return t;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pager, container, false);
+        Bundle arguments = getArguments();
+        int anInt = arguments.getInt(KEY_layoutId);
+        View view = inflater.inflate(anInt, container, false);
         return view;
     }
 
@@ -31,17 +40,6 @@ public abstract class BasePagerFragment extends Fragment {
         findViews(view);
     }
 
-    /**
-     * find view by id
-     *
-     * @param view root View
-     */
     protected void findViews(View view) {
-        mViewPager = view.findViewById(R.id.viewPager);
-        mViewPager.setAdapter(getPagerAdapter());
-        mViewPager.setPageMargin(50);
-        mViewPager.setOffscreenPageLimit(2);
     }
-
-    protected abstract PagerAdapter getPagerAdapter();
 }

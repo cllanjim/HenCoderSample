@@ -15,6 +15,7 @@ import com.example.wuxio.hencodertest.canvas.CanvasFragment;
 import com.example.wuxio.hencodertest.change2d.Change2dFragment;
 import com.example.wuxio.hencodertest.clip.ClipFragment;
 import com.example.wuxio.hencodertest.paint.PaintFragment;
+import com.example.wuxio.hencodertest.practiceZan.ZanFragment;
 import com.example.wuxio.hencodertest.text.TextFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,11 +45,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFields() {
         mFragmentContainer = new FragmentContainer();
-        mViewPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
+        final MainPagerAdapter adapter = new MainPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(adapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mToolbarTitle.setText(adapter.getPageTitle(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mTabLayout.setupWithViewPager(mViewPager);
+        mViewPager.setCurrentItem(adapter.getCount() - 1);
     }
 
     //============================内部类============================
+
     class MainPagerAdapter extends FragmentPagerAdapter {
 
         public MainPagerAdapter(FragmentManager fm) {
@@ -83,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 ClipFragment.newInstance(),
                 Change2dFragment.newInstance(),
                 CameraFragment.newInstance(),
+                ZanFragment.newInstance(),
         };
 
         private String[] mTitles = {
@@ -91,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 "text",
                 "clip",
                 "2D变换",
-                "camera"
+                "camera",
+                "练习-点赞"
         };
 
         Fragment getFragment(int position) {
