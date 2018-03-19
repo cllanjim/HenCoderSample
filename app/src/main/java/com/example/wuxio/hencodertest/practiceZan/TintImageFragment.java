@@ -6,9 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.common.zan.TintImageView;
@@ -23,8 +21,7 @@ import com.example.wuxio.hencodertest.Supplier;
  */
 public class TintImageFragment extends BaseFragment implements View.OnClickListener {
 
-    private static final String TAG          = "TintImageFragment";
-    private static final String KEY_layoutId = "layoutId";
+    private static final String TAG = "TintImageFragment";
 
     public static TintImageFragment newInstance(@LayoutRes int layoutId) {
         TintImageFragment fragment = TintImageFragment.newInstance(layoutId, new Supplier< TintImageFragment >() {
@@ -33,9 +30,6 @@ public class TintImageFragment extends BaseFragment implements View.OnClickListe
                 return new TintImageFragment();
             }
         });
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_layoutId, layoutId);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -43,15 +37,6 @@ public class TintImageFragment extends BaseFragment implements View.OnClickListe
 
     private TintImageView mTintImage;
     private Button        mClick;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Bundle arguments = getArguments();
-        int anInt = arguments.getInt(KEY_layoutId);
-        View view = inflater.inflate(anInt, container, false);
-        return view;
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
