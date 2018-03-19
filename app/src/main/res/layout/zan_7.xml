@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/ivory">
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:orientation="horizontal"
+            >
+
+        <com.example.common.zan.ZanImageView
+                android:id="@+id/zanImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:no_zan_color="@color/colorPrimary"
+                app:zan_color="@color/gold"
+                app:duration="500"
+                app:self_color="true"
+                android:src="@drawable/zan"
+                />
+
+        <com.example.common.zan.ZanCountViewV2
+                android:id="@+id/zanCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:number="159"
+                app:text_size="48sp"
+                app:scroll_duration="500"
+                app:text_color="@color/colorPrimary"
+                />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <Button
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="赞"/>
+
+        <Button
+                android:id="@+id/sub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消"/>
+    </LinearLayout>
+
+</LinearLayout>
