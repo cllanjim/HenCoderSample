@@ -24,19 +24,17 @@ public class TintImageFragment extends BaseFragment implements View.OnClickListe
     private static final String TAG = "TintImageFragment";
 
     public static TintImageFragment newInstance(@LayoutRes int layoutId) {
-        TintImageFragment fragment = TintImageFragment.newInstance(layoutId, new Supplier< TintImageFragment >() {
+        return TintImageFragment.newInstance(layoutId, new Supplier< TintImageFragment >() {
             @Override
             public TintImageFragment get() {
                 return new TintImageFragment();
             }
         });
-        return fragment;
     }
 
     private ObjectAnimator mAnimator;
 
     private TintImageView mTintImage;
-    private Button        mClick;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -46,9 +44,8 @@ public class TintImageFragment extends BaseFragment implements View.OnClickListe
 
     protected void findViews(View view) {
         mTintImage = view.findViewById(R.id.tintImage);
-        mClick = view.findViewById(R.id.click);
-
-        mClick.setOnClickListener(this);
+        Button click = view.findViewById(R.id.click);
+        click.setOnClickListener(this);
     }
 
     @Override

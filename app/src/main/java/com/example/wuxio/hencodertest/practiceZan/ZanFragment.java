@@ -10,6 +10,8 @@ import com.example.wuxio.hencodertest.R;
 
 /**
  * Created by LiuJin on 2018-03-07:15:13
+ *
+ * @author wuxio
  */
 
 public class ZanFragment extends BasePagerFragment {
@@ -28,6 +30,7 @@ public class ZanFragment extends BasePagerFragment {
 
         private Fragment[] mFragments = {
                 TintImageFragment.newInstance(R.layout.zan_1),
+                ZanCountFragment.newInstance(R.layout.zan_2),
         };
 
         public PaintPagerAdapter(FragmentManager fm) {

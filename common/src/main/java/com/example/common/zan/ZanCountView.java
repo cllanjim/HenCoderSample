@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
+import com.example.common.BaseLineUtil;
 import com.example.common.BaseMeasureView;
 import com.example.common.R;
 
@@ -62,11 +63,11 @@ public class ZanCountView extends BaseMeasureView {
     protected void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountViewV2);
-        mDuration = typedArray.getInt(R.styleable.ZanCountViewV2_scroll_duration, 500);
-        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountViewV2_number, 0);
-        float textSize = typedArray.getDimension(R.styleable.ZanCountViewV2_text_size, 24);
-        int color = typedArray.getColor(R.styleable.ZanCountViewV2_text_color, Color.BLACK);
+        TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountView);
+        mDuration = typedArray.getInt(R.styleable.ZanCountView_scroll_duration, 500);
+        mNextInt = mCurrentInt = typedArray.getInt(R.styleable.ZanCountView_number, 0);
+        float textSize = typedArray.getDimension(R.styleable.ZanCountView_text_size, 24);
+        int color = typedArray.getColor(R.styleable.ZanCountView_text_color, Color.BLACK);
         typedArray.recycle();
         mPaint.setTextSize(textSize);
         mPaint.setColor(color);
@@ -100,13 +101,13 @@ public class ZanCountView extends BaseMeasureView {
 
         final float fontSpacing = mPaint.getFontSpacing();
         //显示文本的y坐标
-        float lineHeight = fontSpacing + getPaddingTop();
+        float baseLine = BaseLineUtil.getBaseLine(mPaint);
         final int paddingLeft = getPaddingLeft();
 
         if (isRunning()) {
             float fraction = mAnimator.getAnimatedFraction();
             float dy = fraction * fontSpacing;
-            canvas.clipRect(getWidth() / 2, getPaddingTop(), getRight(), lineHeight);
+            canvas.clipRect(0, getPaddingTop(), getRight(), fontSpacing);
             if (mCurrentInt > mNextInt) {
                 canvas.translate(0, dy);
             } else {
@@ -115,21 +116,21 @@ public class ZanCountView extends BaseMeasureView {
             canvas.drawText(
                     String.valueOf(mCurrentInt),
                     paddingLeft,
-                    lineHeight,
+                    baseLine,
                     mPaint
             );
 
             canvas.drawText(
                     String.valueOf(mCurrentInt - 1),
                     paddingLeft,
-                    lineHeight - fontSpacing,
+                    baseLine - fontSpacing,
                     mPaint
             );
 
             canvas.drawText(
                     String.valueOf(mCurrentInt + 1),
                     paddingLeft,
-                    lineHeight + fontSpacing,
+                    baseLine + fontSpacing,
                     mPaint
             );
             //Log.i(TAG, "onDraw:" + "有动画");
@@ -142,7 +143,7 @@ public class ZanCountView extends BaseMeasureView {
         canvas.drawText(
                 String.valueOf(mCurrentInt),
                 paddingLeft,
-                lineHeight,
+                baseLine,
                 mPaint
         );
         //Log.i(TAG, "onDraw:" + "没有动画");

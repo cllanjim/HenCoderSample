@@ -20,12 +20,8 @@
         <attr name="noZanColor" format="color"/>
     </declare-styleable>
 
-
     <declare-styleable name="ZanCountView">
         <attr name="zan_count" format="integer"/>
-    </declare-styleable>
-
-    <declare-styleable name="ZanCountViewV2">
         <attr name="number" format="integer"/>
         <attr name="text_color" format="color"/>
         <attr name="text_size" format="dimension"/>
