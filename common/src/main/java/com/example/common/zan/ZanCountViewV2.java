@@ -54,7 +54,7 @@ public class ZanCountViewV2 extends ZanCountView {
         final float offset = mBaseOffset;
 
         if (isRunning()) {
-            float fraction = mAnimator.getAnimatedFraction();
+            float fraction = mEngine.getFraction();
             final float dy = fraction * fontSpacing;
             final float right = paddingLeft + position * offset;
 

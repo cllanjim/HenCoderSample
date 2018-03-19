@@ -1,6 +1,5 @@
 package com.example.common.zan;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -8,12 +7,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 
 import com.example.common.BaseLineUtil;
 import com.example.common.BaseMeasureView;
 import com.example.common.R;
+import com.example.common.engine.FractionEngine;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
@@ -24,8 +24,9 @@ import com.example.common.R;
 public class ZanCountView extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
-    protected Paint         mPaint;
-    protected ValueAnimator mAnimator;
+    protected Paint mPaint;
+
+    protected FractionEngine mEngine;
 
     /**
      * 当前显示的数字
@@ -46,6 +47,7 @@ public class ZanCountView extends BaseMeasureView {
      * 动画时常
      */
     protected int mDuration = 500;
+    private float mBaseLine;
 
     public ZanCountView(Context context) {
         this(context, null, 0);
@@ -62,6 +64,7 @@ public class ZanCountView extends BaseMeasureView {
 
     protected void init(Context context, AttributeSet attrs) {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mEngine = new FractionEngine();
 
         TypedArray typedArray = getResources().obtainAttributes(attrs, R.styleable.ZanCountView);
         mDuration = typedArray.getInt(R.styleable.ZanCountView_scroll_duration, 500);
@@ -71,6 +74,8 @@ public class ZanCountView extends BaseMeasureView {
         typedArray.recycle();
         mPaint.setTextSize(textSize);
         mPaint.setColor(color);
+
+        mBaseLine = BaseLineUtil.getBaseLine(mPaint);
     }
 
     /**
@@ -100,40 +105,40 @@ public class ZanCountView extends BaseMeasureView {
     protected void onDraw(Canvas canvas) {
 
         final float fontSpacing = mPaint.getFontSpacing();
-        //显示文本的y坐标
-        float baseLine = BaseLineUtil.getBaseLine(mPaint);
+        float baseLine = mBaseLine;
         final int paddingLeft = getPaddingLeft();
+        final int current = mCurrentInt;
+        final int next = mNextInt;
 
         if (isRunning()) {
-            float fraction = mAnimator.getAnimatedFraction();
+            float fraction = mEngine.getFraction();
             float dy = fraction * fontSpacing;
             canvas.clipRect(0, getPaddingTop(), getRight(), fontSpacing);
-            if (mCurrentInt > mNextInt) {
+            if (current > next) {
                 canvas.translate(0, dy);
             } else {
                 canvas.translate(0, -dy);
             }
             canvas.drawText(
-                    String.valueOf(mCurrentInt),
+                    String.valueOf(current),
                     paddingLeft,
                     baseLine,
                     mPaint
             );
 
             canvas.drawText(
-                    String.valueOf(mCurrentInt - 1),
+                    String.valueOf(current - 1),
                     paddingLeft,
                     baseLine - fontSpacing,
                     mPaint
             );
 
             canvas.drawText(
-                    String.valueOf(mCurrentInt + 1),
+                    String.valueOf(current + 1),
                     paddingLeft,
                     baseLine + fontSpacing,
                     mPaint
             );
-            //Log.i(TAG, "onDraw:" + "有动画");
             invalidate();
             return;
         }
@@ -146,40 +151,20 @@ public class ZanCountView extends BaseMeasureView {
                 baseLine,
                 mPaint
         );
-        //Log.i(TAG, "onDraw:" + "没有动画");
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (isRunning()) {
-            mAnimator.cancel();
-        }
     }
 
     //============================动画相关API============================
 
     protected void start() {
-        if (mAnimator == null) {
-            initAnimator();
-        }
-        if (!mAnimator.isRunning()) {
-            mAnimator.setDuration(mDuration).start();
+        if (!mEngine.isRunning()) {
+            mEngine.setDuration(mDuration).start();
             invalidate();
-            //Log.i(TAG, "start:" + "invalidate ");
-        }
-    }
-
-    protected void initAnimator() {
-        if (mAnimator == null) {
-            // TODO: 2018-03-14 是否可以将其提取成 static,反正只是使用一个进度值而已
-            mAnimator = ValueAnimator.ofInt(0, 12);
-            mAnimator.setInterpolator(new AccelerateInterpolator());
         }
     }
 
     protected boolean isRunning() {
-        return mAnimator != null && mAnimator.isRunning();
+        Log.i(TAG, "isRunning:" + "");
+        return mEngine.isRunning();
     }
 
     //============================对外暴露方法============================
@@ -188,16 +173,16 @@ public class ZanCountView extends BaseMeasureView {
      * 减少数字
      */
     public void sub() {
-        start();
         mNextInt = mCurrentInt - 1;
+        start();
     }
 
     /**
      * 增加数字
      */
     public void add() {
-        start();
         mNextInt = mCurrentInt + 1;
+        start();
     }
 
     /**

@@ -27,13 +27,15 @@ public class FractionEngine implements Fraction {
     /**
      * @param duration 设置总时长
      */
-    public void setDuration(int duration) {
+    public FractionEngine setDuration(int duration) {
         mDuration = duration;
+        return this;
     }
 
     /**
      * 开始工作
      */
+    @Override
     public void start() {
         mStartTime = System.currentTimeMillis();
     }
@@ -41,6 +43,7 @@ public class FractionEngine implements Fraction {
     /**
      * @return true : 正在运行
      */
+    @Override
     public boolean isRunning() {
         return System.currentTimeMillis() - mStartTime < mDuration;
     }
@@ -50,8 +53,14 @@ public class FractionEngine implements Fraction {
      */
     @Override
     public float getFraction() {
-        long currentTime = System.currentTimeMillis() - mStartTime;
-        float interpolation = mInterpolator.getInterpolation(currentTime);
-        return interpolation / mDuration;
+
+        long total = mDuration;
+        long passTime = System.currentTimeMillis() - mStartTime;
+        if (passTime < total) {
+            float interpolation = mInterpolator.getInterpolation(passTime);
+            return interpolation / total;
+        } else {
+            return 1f;
+        }
     }
 }

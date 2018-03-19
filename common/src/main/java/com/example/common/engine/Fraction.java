@@ -9,9 +9,21 @@ package com.example.common.engine;
 public interface Fraction {
 
     /**
+     * 开始计算进度
+     */
+    void start();
+
+    /**
      * 返回一个进度值
      *
      * @return 进度值
      */
     float getFraction();
+
+    /**
+     * 验证是否已经完成
+     *
+     * @return true:正在运行中
+     */
+    boolean isRunning();
 }
