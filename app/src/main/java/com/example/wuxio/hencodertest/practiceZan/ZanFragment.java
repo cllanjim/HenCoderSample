@@ -30,9 +30,12 @@ public class ZanFragment extends BasePagerFragment {
 
         private Fragment[] mFragments = {
                 TintImageFragment.newInstance(R.layout.zan_1),
+                ZanImageFragment.newInstance(R.layout.zan_6),
                 ZanCountFragment.newInstance(R.layout.zan_2),
                 ZanCountV2Fragment.newInstance(R.layout.zan_3),
                 ZanCountV3Fragment.newInstance(R.layout.zan_4),
+                ZanCountV4Fragment.newInstance(R.layout.zan_5),
+                ZanFinalFragment.newInstance(R.layout.zan_7)
         };
 
         public PaintPagerAdapter(FragmentManager fm) {

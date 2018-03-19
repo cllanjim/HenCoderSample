@@ -64,7 +64,7 @@ public class ZanImageView extends TintImageView {
         }
         //从theme读取
         if (!mIsUseSelfColor && typedThemeArray.hasValue(R.styleable.ZanColors_zanColor)) {
-            mZanColor = typedThemeArray.getColor(R.styleable.ZanColors_zanColor, Color.TRANSPARENT);
+            mZanColor = typedThemeArray.getColor(R.styleable.ZanColors_zanColor, Color.BLACK);
             PropertyValuesHolderFactory.zanColor = mZanColor;
         } else {
             //从自定义属性读取
@@ -83,8 +83,6 @@ public class ZanImageView extends TintImageView {
      */
     private void initFields() {
         setColor(mNoZanColor);
-//        mClickEvent = new ClickEvent();
-//        super.setOnClickListener(mClickEvent);
     }
 
     /**
@@ -177,37 +175,7 @@ public class ZanImageView extends TintImageView {
         }
     }
 
-//    @Override
-//    public void setOnClickListener(@Nullable OnClickListener l) {
-//        mClickEvent.mClickListener = l;
-//    }
-
     //============================内部类============================
-
-    /**
-     * 点击事件
-     */
-//    private class ClickEvent implements View.OnClickListener {
-//
-//        //代理用户点击事件
-//        OnClickListener mClickListener;
-//
-//        ClickEvent() {
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//            if (isZan) {
-//                reverseAnimateZan();
-//            } else {
-//                animateZan();
-//            }
-//
-//            if (mClickListener != null) {
-//                mClickListener.onClick(v);
-//            }
-//        }
-//    }
 
     /**
      * 用于提供全局PropertyValuesHolder
