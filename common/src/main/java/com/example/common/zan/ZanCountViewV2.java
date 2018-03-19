@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
+ * 为{@link ZanCountView} 增加了单个数字跳动效果
  *
  * @author wuxio
  */
@@ -37,6 +38,7 @@ public class ZanCountViewV2 extends ZanCountView {
         super.init(context, attrs);
         mBaseOffset = mPaint.measureText(String.valueOf(9));
         mPaint.setStyle(Paint.Style.STROKE);
+        //mPaint.setTextAlign(Paint.Align.RIGHT);
     }
 
     @Override
@@ -143,9 +145,9 @@ public class ZanCountViewV2 extends ZanCountView {
      */
     @Override
     public void sub() {
-        start();
         mNextInt = mCurrentInt - 1;
         findOutCutPosition();
+        start();
 
     }
 
@@ -154,8 +156,8 @@ public class ZanCountViewV2 extends ZanCountView {
      */
     @Override
     public void add() {
-        start();
         mNextInt = mCurrentInt + 1;
         findOutCutPosition();
+        start();
     }
 }

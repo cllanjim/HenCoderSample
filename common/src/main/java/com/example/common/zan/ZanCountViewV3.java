@@ -12,8 +12,6 @@ import android.widget.Scroller;
 
 import com.example.common.BaseMeasureView;
 
-import java.util.Locale;
-
 /**
  * Created by LiuJin on 2018-03-14:7:16
  * 显示一个数字,可以上下滚动 增加/减少 数字
@@ -23,6 +21,7 @@ import java.util.Locale;
 public class ZanCountViewV3 extends BaseMeasureView {
 
     private static final String TAG = "TestCanvasIsNew";
+
     protected Paint           mPaint;
     private   Scroller        mScroller;
     private   VelocityTracker mTracker;
@@ -30,7 +29,7 @@ public class ZanCountViewV3 extends BaseMeasureView {
     private float       mScrollDistance;
     private PaintHelper mPaintHelper;
 
-    private int   mText;
+    private int   mInt;
     private float mY;
 
     public ZanCountViewV3(Context context) {
@@ -69,7 +68,7 @@ public class ZanCountViewV3 extends BaseMeasureView {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        canvas.drawText(String.valueOf(mText), 50, mY, mPaint);
+        canvas.drawText(String.valueOf(mInt), 50, mY, mPaint);
     }
 
     @Override
@@ -77,18 +76,13 @@ public class ZanCountViewV3 extends BaseMeasureView {
         super.computeScroll();
 
         if (mScroller.computeScrollOffset()) {
-            Log.i(TAG, "computeScroll:" + "fling after");
             int y = mScroller.getCurrY();
             float v = y - lastY;
             lastY = y;
             float v1 = mScrollDistance += v;
             mPaintHelper.update(mScrollDistance);
-
             invalidate();
         }
-
-        String format = String.format(Locale.CHINA, "%.4f", mScrollDistance);
-        Log.i(TAG, "computeScroll:" + format);
     }
 
     float lastX;
@@ -165,6 +159,10 @@ public class ZanCountViewV3 extends BaseMeasureView {
     }
 
     //============================内部类============================
+
+    /**
+     * 绘制辅助类
+     */
     class PaintHelper {
 
         int   start;
@@ -201,7 +199,7 @@ public class ZanCountViewV3 extends BaseMeasureView {
         public void update(float distance) {
             float v = distance * 2 / totalDistance;
             float v1 = start + end * v;
-            mText = (int) v1;
+            mInt = (int) v1;
         }
     }
 }

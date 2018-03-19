@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.example.common.BaseLineUtil;
@@ -17,7 +16,7 @@ import com.example.common.engine.FractionEngine;
 
 /**
  * Created by LiuJin on 2018-03-14:7:16
- * 显示一个数字,可以上下滚动 增加/减少 数字
+ * 显示一个数字,有上下滚动动画 增加/减少 数字
  *
  * @author wuxio
  */
@@ -110,6 +109,7 @@ public class ZanCountView extends BaseMeasureView {
         final int current = mCurrentInt;
         final int next = mNextInt;
 
+        //使用被动式绘制
         if (isRunning()) {
             float fraction = mEngine.getFraction();
             float dy = fraction * fontSpacing;
@@ -163,7 +163,6 @@ public class ZanCountView extends BaseMeasureView {
     }
 
     protected boolean isRunning() {
-        Log.i(TAG, "isRunning:" + "");
         return mEngine.isRunning();
     }
 
