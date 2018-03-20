@@ -15,6 +15,8 @@ import com.example.wuxio.hencodertest.canvas.CanvasFragment;
 import com.example.wuxio.hencodertest.change2d.Change2dFragment;
 import com.example.wuxio.hencodertest.clip.ClipFragment;
 import com.example.wuxio.hencodertest.paint.PaintFragment;
+import com.example.wuxio.hencodertest.practiceFlip.FlipFragment;
+import com.example.wuxio.hencodertest.practiceTape.Tape00Fragment;
 import com.example.wuxio.hencodertest.practiceZan.ZanFragment;
 import com.example.wuxio.hencodertest.text.TextFragment;
 
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 Change2dFragment.newInstance(),
                 CameraFragment.newInstance(),
                 ZanFragment.newInstance(),
+                Tape00Fragment.newInstance(R.layout.tape),
+                FlipFragment.newInstance(R.layout.camera),
         };
 
         private String[] mTitles = {
@@ -113,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
                 "clip",
                 "2D变换",
                 "camera",
-                "练习-点赞"
+                "练习-点赞",
+                "练习-尺子",
+                "练习-折纸"
         };
 
         Fragment getFragment(int position) {
